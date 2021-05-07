@@ -13,9 +13,9 @@ axios.interceptors.request.use(config => {
     config.url = config.url.replace("/api/", `/${_basePath}/api/`);
   }
   // if (config.method === 'post' || config.method === 'put') {
-  //   if (config.headers.post['Content-Type'] === 'application/x-www-form-urlencoded') {
-  //     config.data = qs.stringify(config.data);
-  //   }
+    // if (config.headers.post['Content-Type'] === 'application/x-www-form-urlencoded') {
+    //   config.data = qs.stringify(config.data);
+    // }
   // }
   return config;
 }, Promise.reject);

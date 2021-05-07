@@ -1,17 +1,29 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-
-Vue.use(VueRouter);
 import systemRoutes from "./system_routes.js";
 
-const routes = [
+Vue.use(VueRouter);
+
+const businessRoutes = [
   ...systemRoutes
+];
+
+let routes = [
+  {
+    path: "/",
+    component: () => import("@/views/home.vue"),
+    children: businessRoutes
+  },
+  {
+    path: "/login",
+    component: () => import("@/views/sys/login.vue")
+  },
 ];
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
-})
+});
 
 export default router;

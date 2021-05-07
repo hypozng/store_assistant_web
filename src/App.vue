@@ -1,14 +1,6 @@
 <template>
   <div id="app">
-    <el-menu class="el-menu-demo top" mode="horizontal" background-color="rgb(84, 92, 100)" text-color="white" active-text-color="rgb(255, 208, 75)">
-      <el-menu-item v-for="menu in menus" :key="menu.id" @click="topMenuClick(menu)">{{menu.name}}</el-menu-item>
-    </el-menu>
-    <div class="page-bottom">
-      <el-menu class="el-menu-demo sub" mode="vertical" background-color="rgb(84, 92, 100)" text-color="white" active-text-color="rgb(255, 208, 75)">
-        <el-menu-item v-for="menu in subMenus" :key="menu.id" @click="subMenuClick(menu)">{{menu.name}}</el-menu-item>
-      </el-menu>
-      <router-view class="router-view" />
-    </div>
+    <router-view />
   </div>
 </template>
 <script>
@@ -18,7 +10,7 @@ export default {
   data() {
     return {
       menus: [],
-      subMenus: []
+      subMenus: [],
     };
   },
   mounted() {
@@ -35,13 +27,13 @@ export default {
     },
     // 加载菜单数据
     loadData() {
-      fetch.get("api/sys/menu").then(res => {
+      fetch.get("api/sys/menu").then((res) => {
         if (res.code != 0) {
           Message.error("" + res.message);
           return;
         }
-        this.menus = res.data.filter(child => {
-          let parent = res.data.find(item => item.id == child.parentId);
+        this.menus = res.data.filter((child) => {
+          let parent = res.data.find((item) => item.id == child.parentId);
           if (!parent) {
             return true;
           }
@@ -52,12 +44,17 @@ export default {
           this.subMenus = this.menus[0].children;
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style>
+body {
+  padding: 0px;
+  margin: 0px;
+}
 #app {
+  padding: 0px;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

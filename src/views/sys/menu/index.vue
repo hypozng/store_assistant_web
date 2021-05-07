@@ -67,17 +67,17 @@ export default {
       editMode: false,
       menus: [],
       props: {
-        label: "name"
+        label: "name",
       },
       rules: {
         name: [
           {
             required: true,
             message: "请输入菜单名称",
-            trigger: ["blur"]
-          }
-        ]
-      }
+            trigger: ["blur"],
+          },
+        ],
+      },
     };
   },
   mounted() {
@@ -86,13 +86,13 @@ export default {
   methods: {
     // 加载数据
     loadData() {
-      fetch.get("api/sys/menu").then(res => {
+      fetch.get("api/sys/menu").then((res) => {
         if (res.code != 0) {
           Message.error("" + res.message);
           return;
         }
-        this.menus = res.data.filter(child => {
-          let parent = res.data.find(item => item.id == child.parentId);
+        this.menus = res.data.filter((child) => {
+          let parent = res.data.find((item) => item.id == child.parentId);
           if (!parent) {
             return true;
           }
@@ -113,7 +113,7 @@ export default {
       let formData = this.formData;
       this.formData = {
         parentId: formData.parentId,
-        disabled: 0
+        disabled: 0,
       };
       this.editMode = false;
     },
@@ -122,27 +122,18 @@ export default {
       let formData = this.formData;
       this.formData = {
         parentId: formData.id,
-        disabled: 0
+        disabled: 0,
       };
       this.editMode = false;
     },
     // 删除菜单
     deleteMenu() {
-      fetch.delete("api/sys/menu/" + this.formData.id).then(res => {
-        if (res.code != 0) {
-          Message.error("" + res.message);
-          return;
-        }
-        this.formData = null;
-        this.editMode = false;
-      });
-    },
-    save() {
-      this.$refs.form.validate(res => {
-        if (!res) {
-          return;
-        }
-        fetch.post("api/sys/menu/save", this.formData, {headers:{post:{"Content-Type": "application/x-www-form-urlencoded"}}}).then(res => {
+      this.$confirm("确定删除？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        fetch.delete("api/sys/menu/" + this.formData.id).then((res) => {
           if (res.code != 0) {
             Message.error("" + res.message);
             return;
@@ -153,8 +144,26 @@ export default {
           this.loadData();
         });
       });
-    }
-  }
+    },
+    // 保存数据
+    save() {
+      this.$refs.form.validate((res) => {
+        if (!res) {
+          return;
+        }
+        fetch.post("api/sys/menu/save", this.formData).then((res) => {
+          if (res.code != 0) {
+            Message.error("" + res.message);
+            return;
+          }
+          Message.success("" + res.message);
+          this.formData = null;
+          this.editMode = false;
+          this.loadData();
+        });
+      });
+    },
+  },
 };
 </script>
 <style>
