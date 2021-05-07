@@ -12,44 +12,17 @@
   </div>
 </template>
 <script>
+import fetch from "@/utils/fetch.js";
+import { Message } from "element-ui";
 export default {
   data() {
     return {
-      menus: [
-        {
-          id: 1,
-          name: "系统管理",
-          // url: "/page1",
-          children: [
-            { id: 5, name: "菜单管理", url: "/sys_menu" },
-            { id: 4, name: "用户管理", url: "/sys_user" },
-            { id: 6, name: "组织架构", url: "/sys_dept" },
-          ],
-        },
-        {
-          id: 2,
-          name: "选项二",
-          url: "/page2",
-          children: [
-            { id: 4, name: "页面一", url: "/page1" },
-            { id: 5, name: "页面二", url: "/page2" },
-          ],
-        },
-        {
-          id: 3,
-          name: "选项三",
-          url: "/page3",
-          children: [
-            { id: 4, name: "page1", url: "/page1" },
-            { id: 5, name: "page2", url: "/page2" },
-          ],
-        },
-      ],
-      subMenus: [],
+      menus: [],
+      subMenus: []
     };
   },
   mounted() {
-    this.subMenus = this.menus[0].children;
+    this.loadData();
   },
   methods: {
     // 顶部菜单点击事件
@@ -60,7 +33,27 @@ export default {
     subMenuClick(menu) {
       this.$router.push(menu.url);
     },
-  },
+    // 加载菜单数据
+    loadData() {
+      fetch.get("api/sys/menu").then(res => {
+        if (res.code != 0) {
+          Message.error("" + res.message);
+          return;
+        }
+        this.menus = res.data.filter(child => {
+          let parent = res.data.find(item => item.id == child.parentId);
+          if (!parent) {
+            return true;
+          }
+          parent.children = parent.children || [];
+          parent.children.push(child);
+        });
+        if (this.menus && this.menus.length) {
+          this.subMenus = this.menus[0].children;
+        }
+      });
+    }
+  }
 };
 </script>
 <style>
@@ -82,12 +75,10 @@ export default {
   display: flex;
   flex-direction: row;
 }
-.el-menu-demo.sub {
-}
 .router-view {
   flex-grow: 1;
 }
-#nav {
+/* #nav {
   padding: 30px;
 }
 
@@ -98,5 +89,5 @@ export default {
 
 #nav a.router-link-exact-active {
   color: #42b983;
-}
+} */
 </style>

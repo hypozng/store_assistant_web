@@ -1,5 +1,17 @@
 <template>
   <div class="about">
-    <h1>page1</h1>
+    <list></list>
   </div>
 </template>
+<script>
+import list from "@/components/list";
+export default {
+  components: {
+    list
+  },
+  data() {
+    return {};
+  },
+  methods: {}
+};
+</script>
