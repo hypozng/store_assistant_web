@@ -1,16 +1,15 @@
 <template>
   <div id="home">
-    <el-menu class="el-menu-demo top" mode="horizontal" background-color="rgb(84, 92, 100)" text-color="white" active-text-color="rgb(255, 208, 75)">
+    <el-menu class="el-menu-demo top" mode="horizontal" background-color="#545C64" text-color="white" active-text-color="#FFD04B">
       <el-menu-item v-for="menu in menus" :key="menu.id" @click="topMenuClick(menu)">{{menu.name}}</el-menu-item>
     </el-menu>
     <div class="page-bottom">
-      <el-menu class="el-menu-demo sub" mode="vertical" background-color="rgb(84, 92, 100)" text-color="white" active-text-color="rgb(255, 208, 75)">
+      <el-menu class="el-menu-demo sub" mode="vertical" background-color="#545C64" text-color="white" active-text-color="#FFD04B">
         <el-menu-item v-for="menu in subMenus" :key="menu.id" @click="subMenuClick(menu)">{{menu.name}}</el-menu-item>
       </el-menu>
       <router-view class="router-view" />
     </div>
   </div>
-
 </template>
 <script>
 import fetch from "@/utils/fetch.js";
@@ -79,16 +78,4 @@ export default {
 .router-view {
   flex-grow: 1;
 }
-/* #nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-} */
 </style>

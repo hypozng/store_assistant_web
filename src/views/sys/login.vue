@@ -14,7 +14,6 @@
   </div>
 </template>
 <script>
-import fetch from "@/utils/fetch.js";
 import { Message } from "element-ui";
 export default {
   data() {
@@ -30,14 +29,10 @@ export default {
         username: this.username,
         password: this.password,
       };
-      fetch.post("api/sys/user/login", params).then((res) => {
-        if (res.code != 0) {
-          Message.error("" + res.message);
-          return;
-        }
+      this.$store.dispatch("login", params).then(() => {
         Message.success("登录成功");
         this.$router.push("/");
-      });
+      }, Message.error);
     },
   },
 };

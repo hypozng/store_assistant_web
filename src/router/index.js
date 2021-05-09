@@ -11,7 +11,7 @@ const businessRoutes = [
 let routes = [
   {
     path: "/",
-    component: () => import("@/views/home.vue"),
+    component: () => import("@/views/index.vue"),
     children: businessRoutes
   },
   {
