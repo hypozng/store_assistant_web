@@ -1,5 +1,5 @@
-import sessionUtils from "./utils/sessionUtils.js";
-import router from "./router/index.js";
+import sessionUtils from "./sessionUtils.js";
+import router from "@/router/index.js";
 
 let whiteList = ["/login"];
 

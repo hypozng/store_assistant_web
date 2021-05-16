@@ -71,11 +71,11 @@ export default {
   width: 100%;
 }
 .page-bottom {
-  flex-grow: 1;
+  flex: 1;
   display: flex;
   flex-direction: row;
 }
 .router-view {
-  flex-grow: 1;
+  flex: 1;
 }
 </style>

@@ -43,7 +43,7 @@
             </el-row>
             <el-row v-if="editMode">
               <el-col :span="24">
-                <el-form-item label="操作" style="text-align:left">
+                <el-form-item label="操作" style="text-align: left">
                   <el-button type="primary" plain @click="addSiblingsMenu">添加同级菜单</el-button>
                   <el-button type="primary" plain @click="addSubMenu">添加下级菜单</el-button>
                   <el-button type="danger" plain @click="deleteMenu">删除</el-button>
@@ -87,10 +87,6 @@ export default {
     // 加载数据
     loadData() {
       fetch.get("api/sys/menu").then((res) => {
-        if (res.code != 0) {
-          Message.error("" + res.message);
-          return;
-        }
         this.menus = res.data.filter((child) => {
           let parent = res.data.find((item) => item.id == child.parentId);
           if (!parent) {
@@ -134,10 +130,6 @@ export default {
         type: "warning",
       }).then(() => {
         fetch.delete("api/sys/menu/" + this.formData.id).then((res) => {
-          if (res.code != 0) {
-            Message.error("" + res.message);
-            return;
-          }
           Message.success("" + res.message);
           this.formData = null;
           this.editMode = false;
@@ -152,10 +144,6 @@ export default {
           return;
         }
         fetch.post("api/sys/menu/save", this.formData).then((res) => {
-          if (res.code != 0) {
-            Message.error("" + res.message);
-            return;
-          }
           Message.success("" + res.message);
           this.formData = null;
           this.editMode = false;
