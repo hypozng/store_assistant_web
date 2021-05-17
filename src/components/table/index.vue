@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 10px">
+  <div class="v-table-page">
     <div class="search">
       <div v-for="(item, index) in search" :key="item.key" class="search-input">
         <div class="search-input-label">{{ item.label }}</div>
@@ -159,7 +159,7 @@ export default {
 };
 </script>
 <style>
-.page {
+.v-table-page {
   padding: 10px;
 }
 .search {
