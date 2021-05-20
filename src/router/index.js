@@ -2,15 +2,16 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import sessionUtils from '@/utils/sessionUtils.js';
 import systemRoutes from "./system_routes.js";
+import saleRoutes from "./sale_routes.js";
 
 Vue.use(VueRouter);
 
 const businessRoutes = [
-  ...systemRoutes
+  ...systemRoutes,
+  ...saleRoutes
 ];
 
-let routes = [
-  {
+let routes = [{
     path: "/",
     component: () => import("@/views/index.vue"),
     children: businessRoutes

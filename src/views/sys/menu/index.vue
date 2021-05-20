@@ -2,7 +2,7 @@
   <div class="page">
     <el-tree :data="menus" :props="props" :expand-on-click-node="false" @node-click="handleNodeClick" class="menu-tree"></el-tree>
     <div class="content">
-      <el-form v-if="formData" ref="form" :model="formData" label-width="120px" :rules="rules">
+      <el-form v-if="formData" ref="form" :model="formData" label-width="120px" align="left" :rules="rules">
         <el-container>
           <el-main>
             <el-row>
@@ -36,24 +36,31 @@
             </el-row>
             <el-row>
               <el-col :span="24">
-                <el-form-item prop="remark" label="备注">
-                  <el-input v-model="formData.remark" type="textarea" />
+                <el-form-item prop="orderIndex" label="排序">
+                  <el-slider v-model="formData.orderIndex" />
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row v-if="editMode">
+            <el-row>
               <el-col :span="24">
-                <el-form-item label="操作" style="text-align: left">
-                  <el-button type="primary" plain @click="addSiblingsMenu">添加同级菜单</el-button>
-                  <el-button type="primary" plain @click="addSubMenu">添加下级菜单</el-button>
-                  <el-button type="danger" plain @click="deleteMenu">删除</el-button>
+                <el-form-item prop="remark" label="备注">
+                  <el-input v-model="formData.remark" type="textarea" rows="3" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row v-if="mode=='edit'">
+              <el-col :span="24">
+                <el-form-item label="操作">
+                  <el-button type="primary" plain size="small" @click="handleAddSiblingClick">添加同级</el-button>
+                  <el-button type="primary" plain size="small" @click="handleAddChildClick">添加下级</el-button>
+                  <el-button type="danger" plain size="small" @click="handleDeleteClick">删除</el-button>
                 </el-form-item>
               </el-col>
             </el-row>
           </el-main>
         </el-container>
-        <el-button type="primary" @click="save">立即保存</el-button>
       </el-form>
+      <el-button type="primary" @click="save">立即保存</el-button>
     </div>
   </div>
 </template>
@@ -64,37 +71,75 @@ export default {
   data() {
     return {
       formData: null,
-      editMode: false,
+      mode: "add",
       menus: [],
       props: {
-        label: "name",
+        label: "name"
       },
       rules: {
         name: [
           {
             required: true,
             message: "请输入菜单名称",
-            trigger: ["blur"],
-          },
-        ],
-      },
+            trigger: ["blur"]
+          }
+        ]
+      }
     };
   },
   mounted() {
     this.loadData();
   },
   methods: {
+    // 将页面模式切换为添加模式
+    switchToAdd(parentId) {
+      parentId = parentId || 0;
+      this.formData = { parentId };
+      this.mode = "add";
+    },
+    // 将页面切换为编辑模式
+    switchToEdit(r) {
+      if (!r) {
+        this.switchToAdd();
+        return;
+      }
+      r = JSON.parse(JSON.stringify(r));
+      delete r.children;
+      this.formData = r;
+      this.mode = "edit";
+    },
+    // 处理添加同级按钮click事件
+    handleAddSiblingClick() {
+      this.switchToAdd(this.formData.parentId);
+    },
+    // 处理添加下级按钮click事件
+    handleAddChildClick() {
+      this.switchToAdd(this.formData.id);
+    },
+    // 处理删除按钮click事件
+    handleDeleteClick() {
+      if (this.mode == "add") {
+        return;
+      }
+      this.delete();
+    },
     // 加载数据
     loadData() {
-      fetch.get("api/sys/menu").then((res) => {
-        this.menus = res.data.filter((child) => {
-          let parent = res.data.find((item) => item.id == child.parentId);
+      fetch.get("api/sys/menu").then(res => {
+        this.menus = res.data.filter(child => {
+          let parent = res.data.find(item => item.id == child.parentId);
           if (!parent) {
             return true;
           }
           parent.children = parent.children || [];
           parent.children.push(child);
         });
+        let item = this.menus && this.menus[0];
+        if (item) {
+          this.switchToEdit(item);
+        } else {
+          this.switchToAdd();
+        }
       });
     },
     // 处理节点点击事件
@@ -109,7 +154,7 @@ export default {
       let formData = this.formData;
       this.formData = {
         parentId: formData.parentId,
-        disabled: 0,
+        disabled: 0
       };
       this.editMode = false;
     },
@@ -118,43 +163,38 @@ export default {
       let formData = this.formData;
       this.formData = {
         parentId: formData.id,
-        disabled: 0,
+        disabled: 0
       };
       this.editMode = false;
     },
-    // 删除菜单
-    deleteMenu() {
-      this.$confirm("确定删除？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      }).then(() => {
-        fetch.delete("api/sys/menu/" + this.formData.id).then((res) => {
-          Message.success("" + res.message);
-          this.formData = null;
-          this.editMode = false;
-          this.loadData();
-        });
-      });
-    },
     // 保存数据
     save() {
-      this.$refs.form.validate((res) => {
+      this.$refs.form.validate(res => {
         if (!res) {
           return;
         }
-        fetch.post("api/sys/menu/save", this.formData).then((res) => {
-          Message.success("" + res.message);
-          this.formData = null;
-          this.editMode = false;
+        fetch.post("api/sys/menu/save", this.formData).then(() => {
+          Message.success("保存成功");
           this.loadData();
         });
       });
     },
-  },
+    // 删除菜单
+    delete() {
+      this.$confirm("确定删除这条数据？").then(() => {
+        fetch
+          .delete("api/sys/menu/" + this.formData.id)
+          .then(() => {
+            Message.success("删除成功");
+            this.loadData();
+          })
+          .catch(() => {});
+      });
+    }
+  }
 };
 </script>
-<style>
+<style scoped>
 .page {
   width: 100%;
   background-color: #e0e0e0;
@@ -165,6 +205,6 @@ export default {
   width: 400px;
 }
 .content {
-  flex-grow: 1;
+  flex: 1;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="v-table-page">
+  <div class="v-table">
     <div class="search">
       <div v-for="(item, index) in search" :key="item.key" class="search-input">
         <div class="search-input-label">{{ item.label }}</div>
@@ -13,45 +13,18 @@
       </div>
     </div>
     <div v-if="tools && tools.length" class="tools">
-      <el-button
-        v-for="(tool, index) in tools"
-        :key="index"
-        v-show="!logic.getConfigProperty(tool.hidden)"
-        :disabled="logic.getConfigProperty(tool.disabled)"
-        :type="tool.type"
-        size="small"
-        plain
-        @click="tool.click"
-      >
+      <el-button v-for="(tool, index) in tools" :key="index" v-show="!logic.getConfigProperty(tool.hidden)" :disabled="logic.getConfigProperty(tool.disabled)" :type="tool.type" size="small" plain @click="tool.click">
         {{ tool.label }}
       </el-button>
     </div>
     <div class="content">
       <el-table :data="tableData" class="table" style="width: 100%" header-row-class-name="table-header-row" cell-class-name="table-cell" border stripe size="small">
-        <el-table-column
-          v-for="column in columns"
-          :key="column.key"
-          :prop="column.key"
-          :label="column.label"
-          :width="column.width"
-          :min-width="column.minWidth"
-          :sortable="column.sortable"
-          :align="column.align"
-        >
+        <el-table-column v-for="column in columns" :key="column.key" :prop="column.key" :label="column.label" :width="column.width" :min-width="column.minWidth" :sortable="column.sortable" :align="column.align">
           <template slot-scope="scope">{{ logic.getCellRender(scope.row[column.key], scope.row, column) }}</template>
         </el-table-column>
         <el-table-column v-if="buttons && buttons.length" fixed="right" label="操作" align="center" :width="operationColumnWidth">
           <template slot-scope="scope">
-            <el-button
-              v-for="(button, index) in buttons"
-              :key="index"
-              v-show="!logic.getConfigProperty(button.hidden, scope.row)"
-              :disabled="logic.getConfigProperty(button.disabled, scope.row)"
-              :type="button.type"
-              size="mini"
-              plain
-              @click="button.click(scope.row)"
-            >
+            <el-button v-for="(button, index) in buttons" :key="index" v-show="!logic.getConfigProperty(button.hidden, scope.row)" :disabled="logic.getConfigProperty(button.disabled, scope.row)" :type="button.type" size="mini" plain @click="button.click(scope.row)">
               {{ button.label }}
             </el-button>
           </template>
@@ -73,8 +46,8 @@ export default {
         page: 1,
         size: 10,
         sort: "id",
-        params: {},
-      },
+        params: {}
+      }
     };
   },
   methods: {
@@ -96,112 +69,112 @@ export default {
         lock: true,
         text: "正在加载",
         spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
+        background: "rgba(0, 0, 0, 0.7)"
       });
       fetch
         .post(this.url, this.searchParameter)
-        .then((res) => {
+        .then(res => {
           if (res.code != 0) {
             Message.error("" + res.message);
             return;
           }
           this.tableData = res.data.content;
         })
-        .catch((err) => {
+        .catch(err => {
           console.error(err);
           Message.error("" + err);
         })
         .finally(() => {
           loading.close();
         });
-    },
+    }
   },
   props: {
     // URL
     url: {
       type: String,
-      require: true,
+      require: true
     },
     // 查询条件
     search: {
       type: Array,
       default() {
         return [];
-      },
+      }
     },
     // 表格的列
     columns: {
       type: Array,
       default() {
         return [];
-      },
+      }
     },
     // 工具栏按钮
     tools: {
       type: Array,
       default() {
         return [];
-      },
+      }
     },
     // 操作列按钮
     buttons: {
       type: Array,
       default() {
         return [];
-      },
+      }
     },
     // 操作列宽度
     operationColumnWidth: {
       type: [String, Number],
-      default: 250,
-    },
-  },
+      default: 250
+    }
+  }
 };
 </script>
 <style>
-.v-table-page {
+.v-table {
   padding: 10px;
 }
-.search {
+.v-table .search {
   text-align: left;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
 
-.search-input {
+.v-table .search-input {
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 5px;
 }
 
-.search-input-label {
+.v-table .search-input-label {
   min-width: 80px;
   font-size: 14px;
   text-align: right;
 }
 
-.search-input-content {
+.v-table .search-input-content {
   width: 200px;
   margin-left: 5px;
 }
 
-.tools {
+.v-table .tools {
   text-align: left;
   margin-top: 10px;
 }
 
-.table-header-row,
-tr.table-header-row,
-.table-header-row th {
+.v-table .table-header-row,
+.v-table tr.table-header-row,
+.v-table .table-header-row th {
   background-color: #f4fafd;
   font-weight: normal;
   text-align: center;
   color: black;
 }
 
-.content {
+.v-table .content {
   margin-top: 10px;
 }
 </style>
