@@ -1,8 +1,8 @@
 <template>
-  <el-dialog :visible.sync="visible" :title="`商品${title}`" width="700px" :close-on-click-modal="false" :append-to-body="false" :modal-append-to-body="false">
+  <el-dialog :visible.sync="visible" :title="`商品${title}`" width="1000px" :close-on-click-modal="false" :append-to-body="false" :modal-append-to-body="false">
     <el-container>
       <el-main>
-        <el-form ref="form" :model="formData" label-width="120px">
+        <el-form ref="form" :model="formData" label-width="120px" align="left">
           <el-row>
             <el-col :span="24">
               <el-form-item label="商品名称" prop="name">
@@ -11,16 +11,31 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="24">
-              <el-form-item label="图片" prop="image">
-                <el-input v-model="formData.image" />
+            <el-col :span="12">
+              <el-form-item label="种类" prop="categoryId">
+                <!-- <el-cascader v-model="formData.categoryId" :options="categoryOptions" :show-all-levels="false" :props="{ checkStrictly: true, value: 'id', label: 'name' }" /> -->
+                <el-select v-model="formData.categoryId">
+                  <el-option v-for="category in categoryOptions" :key="category.id" :label="category.name" :value="category.id" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="品牌" prop="brandId" style="width: 100%">
+                <el-select v-model="formData.brandId">
+                  <el-option v-for="brand in brandOptions" :key="brand.id" :label="brand.name" :value="brand.id" />
+                </el-select>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="24">
+            <el-col :span="12">
+              <el-form-item label="型号" prop="model">
+                <el-input v-model="formData.model" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
               <el-form-item label="价格" prop="price">
-                <el-input v-model="formData.price" />
+                <el-input-number v-model="formData.price" :precision="2" :step="0.1" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -56,8 +71,14 @@ export default {
     return {
       visible: false,
       title: "添加",
-      formData: {}
+      formData: {},
+      brandOptions: [],
+      categoryOptions: [],
     };
+  },
+  mounted() {
+    this.loadBrandOptions();
+    this.loadCategoryOptions();
   },
   methods: {
     // 显示对话框
@@ -67,7 +88,9 @@ export default {
         this.formData = JSON.parse(JSON.stringify(r));
       } else {
         this.title = "添加";
-        this.formData = {};
+        this.formData = {
+          price: 0,
+        };
       }
       this.visible = true;
     },
@@ -77,7 +100,7 @@ export default {
     },
     // 保存
     save() {
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate((valid) => {
         if (!valid) {
           return;
         }
@@ -87,7 +110,24 @@ export default {
           this.$emit("success");
         });
       });
-    }
-  }
+    },
+    // 加载品牌数据
+    loadBrandOptions() {
+      fetch.get("api/sale/commodityBrand").then((res) => {
+        this.brandOptions = res.data;
+      });
+    },
+    // 加载种类数据
+    loadCategoryOptions() {
+      fetch.get("api/sale/commodityCategory").then((res) => {
+        this.categoryOptions = res.data;
+      });
+    },
+  },
 };
 </script>
+<style scoped>
+.el-select {
+  width: 100%;
+}
+</style>
