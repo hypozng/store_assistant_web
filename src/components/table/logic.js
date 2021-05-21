@@ -1,6 +1,13 @@
 import render from "@/utils/render.js";
 
 export default {
+  // 调用函数，如果fn不是函数，则直接返回fn
+  call(fn, args) {
+    if (typeof prop === "function") {
+      return fn(args);
+    }
+    return fn;
+  },
   // 单元格渲染
   getCellRender(value, row, column) {
     let fn = function (value) {
@@ -20,5 +27,4 @@ export default {
     }
     return prop;
   },
-
 }

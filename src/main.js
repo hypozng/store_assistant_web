@@ -8,11 +8,13 @@ import store from "@/store/index.js";
 import sessionUtils from "@/utils/sessionUtils.js";
 import "@/utils/permission.js";
 import vTable from "@/components/table/index.vue";
+import vInput from "@/components/form/input.vue";
 
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.component("vTable", vTable);
+Vue.component("vInput", vInput);
 
 new Vue({
   router,

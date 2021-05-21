@@ -5,9 +5,7 @@
         <el-form ref="form" :model="formData" label-width="120px" align="left">
           <el-row>
             <el-col :span="24">
-              <el-form-item label="商品名称" prop="name">
-                <el-input v-model="formData.name" />
-              </el-form-item>
+              <v-input v-model="formData.name" label="商品名称" prop="name" />
             </el-col>
           </el-row>
           <el-row>
@@ -29,9 +27,7 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="型号" prop="model">
-                <el-input v-model="formData.model" />
-              </el-form-item>
+              <v-input v-model="formData.model" label="型号" prop="model" />
             </el-col>
             <el-col :span="12">
               <el-form-item label="价格" prop="price">
@@ -41,9 +37,7 @@
           </el-row>
           <el-row>
             <el-col :span="24">
-              <el-form-item label="编码" prop="code">
-                <el-input v-model="formData.code" />
-              </el-form-item>
+              <v-input v-model="formData.code" label="编码" prop="code" />
             </el-col>
           </el-row>
           <el-row>
@@ -73,7 +67,7 @@ export default {
       title: "添加",
       formData: {},
       brandOptions: [],
-      categoryOptions: [],
+      categoryOptions: []
     };
   },
   mounted() {
@@ -89,7 +83,7 @@ export default {
       } else {
         this.title = "添加";
         this.formData = {
-          price: 0,
+          price: 0
         };
       }
       this.visible = true;
@@ -100,7 +94,7 @@ export default {
     },
     // 保存
     save() {
-      this.$refs.form.validate((valid) => {
+      this.$refs.form.validate(valid => {
         if (!valid) {
           return;
         }
@@ -113,17 +107,17 @@ export default {
     },
     // 加载品牌数据
     loadBrandOptions() {
-      fetch.get("api/sale/commodityBrand").then((res) => {
+      fetch.get("api/sale/commodityBrand").then(res => {
         this.brandOptions = res.data;
       });
     },
     // 加载种类数据
     loadCategoryOptions() {
-      fetch.get("api/sale/commodityCategory").then((res) => {
+      fetch.get("api/sale/commodityCategory").then(res => {
         this.categoryOptions = res.data;
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>
