@@ -19,7 +19,7 @@ export default {
   data() {
     return {
       username: "",
-      password: "",
+      password: ""
     };
   },
   methods: {
@@ -27,14 +27,14 @@ export default {
     login() {
       let params = {
         username: this.username,
-        password: this.password,
+        password: this.password
       };
       this.$store.dispatch("login", params).then(() => {
         Message.success("登录成功");
-        this.$router.push("/");
+        this.$router.replace("/index");
       }, Message.error);
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>

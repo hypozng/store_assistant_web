@@ -1,19 +1,20 @@
 import axios from "axios";
+// import Vue from "vue";
 import {
   Message
 } from "element-ui";
 // axios 配置
 axios.defaults.timeout = 30000000;
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-let _basePath = process.env.BASE_URL;
+// let _basePath = process.env.BASE_URL;
 
 //request拦截器
-axios.interceptors.request.use(config => {
-  if (config.url.includes("api/")) {
-    config.url = config.url.replace("/api/", `/${_basePath}/api/`);
-  }
-  return config;
-}, Promise.reject);
+// axios.interceptors.request.use(config => {
+//   if (config.url.includes("api/")) {
+//     config.url = config.url.replace("/api/", `/${_basePath}/api/`);
+//   }
+//   return config;
+// }, Promise.reject);
 
 //response拦截器
 axios.interceptors.response.use(res => {
@@ -22,7 +23,7 @@ axios.interceptors.response.use(res => {
       Message.error("" + res.data.message);
       return Promise.reject(res.data.message);
     case -10:
-      window.location.href = "login";
+      axios.vue.$router.replace("/login");
       return Promise.reject(res.data.message);
   }
   return res.data;

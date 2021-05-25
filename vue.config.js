@@ -1,6 +1,6 @@
 module.exports = {
   devServer: {
-    port: 9999,
+    port: 9991,
     open: true,
     disableHostCheck: true,
     overlay: {
@@ -9,8 +9,8 @@ module.exports = {
     },
     proxy: {
       "/api": {
-        target: "http://localhost:8080/",
-        changeOrigon: true,
+        target: "http://localhost:9990/api/",
+        changeOrigin: true,
         pathRewrite: {
           "^/api": ""
         }

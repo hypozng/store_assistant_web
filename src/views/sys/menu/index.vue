@@ -60,7 +60,7 @@
           </el-main>
         </el-container>
       </el-form>
-      <el-button type="primary" @click="save">立即保存</el-button>
+      <el-button type="success" size="medium" plain @click="save">立即保存</el-button>
     </div>
   </div>
 </template>
@@ -206,5 +206,6 @@ export default {
 }
 .content {
   flex: 1;
+  text-align: center;
 }
 </style>

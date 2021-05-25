@@ -13,6 +13,10 @@ const businessRoutes = [
 
 let routes = [{
     path: "/",
+    redirect: "/index",
+  },
+  {
+    path: "/index",
     component: () => import("@/views/index.vue"),
     children: businessRoutes
   },
@@ -25,7 +29,7 @@ let routes = [{
 const whiteList = ["/login"];
 
 const router = new VueRouter({
-  mode: 'history',
+  // mode: 'history',
   base: process.env.BASE_URL,
   routes
 });

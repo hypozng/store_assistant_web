@@ -1,14 +1,30 @@
 <template>
-  <div id="home">
-    <el-menu class="el-menu-demo top" mode="horizontal" background-color="#545C64" text-color="white" active-text-color="#FFD04B">
-      <el-menu-item v-for="menu in menus" :key="menu.id" @click="topMenuClick(menu)">{{menu.name}}</el-menu-item>
-    </el-menu>
-    <div class="page-bottom">
-      <el-menu class="el-menu-demo sub" mode="vertical" background-color="#545C64" text-color="white" active-text-color="#FFD04B">
-        <el-menu-item v-for="menu in subMenus" :key="menu.id" @click="subMenuClick(menu)">{{menu.name}}</el-menu-item>
+  <div class="index-page">
+    <div class="menu-container">
+      <div class="user-box">
+        <div class="user-head-photo">
+          <i class="el-icon-user-solid" style="font-size:30px"></i>
+        </div>
+        <span class="user-title">{{userInfo && userInfo.name}}</span>
+        <span class="user-button" @click="logout">退出</span>
+      </div>
+      <el-menu mode="vertical" background-color="#333399" text-color="white" active-text-color="#FFD04B">
+        <template v-for="menu in menus">
+          <el-submenu v-if="menu.children" :key="menu.id" :index="''+menu.id">
+            <template slot="title">{{menu.name}}</template>
+            <template v-for="subMenu in menu.children">
+              <el-submenu v-if="subMenu.children" :key="subMenu.id" :index="''+subMenu.id">
+                <template slot="title">{{subMenu.name}}</template>
+                <el-menu-item v-for="menuItem in subMenu.children" :key="menuItem.id" @click="handleMenuItemClick(menuItem)">{{menuItem.name}}</el-menu-item>
+              </el-submenu>
+              <el-menu-item v-else :key="subMenu.id" :index="''+subMenu.id" @click="handleMenuItemClick(subMenu)">{{subMenu.name}}</el-menu-item>
+            </template>
+          </el-submenu>
+          <el-menu-item v-else :key="menu.id" :index="''+menu.id" @click="handleMenuItemClick(menu)">{{menu.name}}</el-menu-item>
+        </template>
       </el-menu>
-      <router-view class="router-view" />
     </div>
+    <router-view class="router-view" />
   </div>
 </template>
 <script>
@@ -18,30 +34,32 @@ export default {
   data() {
     return {
       menus: [],
-      subMenus: [],
+      userInfo: this.$store.getters.userInfo
     };
   },
   mounted() {
     this.loadData();
   },
   methods: {
-    // 顶部菜单点击事件
-    topMenuClick(menu) {
-      this.subMenus = menu.children;
+    // 退出登录
+    logout() {
+      this.$store.dispatch("logout").then(() => {
+        this.$router.replace("/login");
+      });
     },
     // 左部菜单点击事件
-    subMenuClick(menu) {
+    handleMenuItemClick(menu) {
       this.$router.push(menu.url);
     },
     // 加载菜单数据
     loadData() {
-      fetch.get("api/sys/menu").then((res) => {
+      fetch.get("api/sys/menu").then(res => {
         if (res.code != 0) {
           Message.error("" + res.message);
           return;
         }
-        this.menus = res.data.filter((child) => {
-          let parent = res.data.find((item) => item.id == child.parentId);
+        this.menus = res.data.filter(child => {
+          let parent = res.data.find(item => item.id == child.parentId);
           if (!parent) {
             return true;
           }
@@ -52,28 +70,62 @@ export default {
           this.subMenus = this.menus[0].children;
         }
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style>
-#home {
+.index-page {
+  width: 100%;
+  height: 100%;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+.menu-container {
   display: flex;
   flex-direction: column;
 }
-.el-menu-demo.top {
-  width: 100%;
-}
-.page-bottom {
-  flex: 1;
+
+.user-box {
+  height: 50px;
+  background-color: #333399;
   display: flex;
   flex-direction: row;
+  align-items: center;
+  box-shadow: 0 0 1px black;
+  margin-bottom: 1px;
+  color: white;
+}
+
+.user-head-photo {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+}
+
+.user-title {
+  margin-left: 10px;
+  font-size: 15px;
+  flex: 1;
+}
+
+.user-button {
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #A0A0A0;
+}
+.user-button:hover {
+  color: white;
+}
+
+.el-menu {
+  width: 200px;
+  flex: 1;
 }
 .router-view {
   flex: 1;
