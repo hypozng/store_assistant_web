@@ -6,31 +6,41 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      rules: this.required
+        ? [
+            {
+              required: true,
+              message: "请输入" + this.label,
+              trigger: ["blur", "change"],
+            },
+          ]
+        : null,
+    };
   },
   props: {
     label: {
       type: String,
-      default: ""
+      default: "",
     },
     prop: {
       type: String,
-      default: ""
+      default: "",
     },
     required: {
       type: Boolean,
-      default: false
+      default: false,
     },
     value: {
-      default: null
+      default: null,
     },
     size: {
       type: String,
-      default: "small"
+      default: "small",
     },
     type: {
-      type: String
-    }
-  }
+      type: String,
+    },
+  },
 };
 </script>

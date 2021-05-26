@@ -14,6 +14,24 @@ const utils = {
     return fn.call(this, arg);
   },
 
+  // 将list转换成tree
+  list2tree(list, options) {
+    if (!list) {
+      return list;
+    }
+    options = options || {};
+    return list.filter(child => {
+      let parent = list.find(item => item[options.key || "id"] == child[options.parent || "parentId"]);
+      if (!parent) {
+        return true;
+      }
+      if (!parent[options.children || "children"]) {
+        parent[options.children || "children"] = [];
+      }
+      parent[options.children || "children"].push(child);
+    });
+  },
+
   // 验证表单数据
   validate(field) {
     field = field || "form";
@@ -41,6 +59,9 @@ const utils = {
         Message.success("操作成功");
         if (typeof this.close === "function") {
           this.close();
+        }
+        if (typeof this.loadData === "function") {
+          this.loadData();
         }
         if (typeof this.$emit === "function") {
           this.$emit("success");

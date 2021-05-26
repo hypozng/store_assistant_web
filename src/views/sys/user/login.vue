@@ -9,7 +9,7 @@
         <i slot="prefix" class="el-input__icon el-icon-lock"></i>
         <i slot="suffix" class="el-input__icon el-icon-view"></i>
       </el-input>
-      <el-button type="primary" @click="login">登录</el-button>
+      <el-button type="primary" @click="login" :loading="loginLoading">登录</el-button>
     </div>
   </div>
 </template>
@@ -19,22 +19,29 @@ export default {
   data() {
     return {
       username: "",
-      password: ""
+      password: "",
+      loginLoading: false,
     };
   },
   methods: {
     // 登录
     login() {
+      this.loginLoading = true;
       let params = {
         username: this.username,
-        password: this.password
+        password: this.password,
       };
-      this.$store.dispatch("login", params).then(() => {
-        Message.success("登录成功");
-        this.$router.replace("/index");
-      }, Message.error);
-    }
-  }
+      this.$store
+        .dispatch("login", params)
+        .then(() => {
+          Message.success("登录成功");
+          this.$router.replace("/index");
+        })
+        .finally(() => {
+          this.loginLoading;
+        });
+    },
+  },
 };
 </script>
 <style scoped>

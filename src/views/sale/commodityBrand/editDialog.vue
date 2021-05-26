@@ -16,7 +16,7 @@
                 <el-input v-model="formData.icon" />
               </el-form-item>
             </el-col>
-          </el-row> -->
+          </el-row>-->
           <el-row>
             <el-col :span="24">
               <el-form-item label="排序" prop="orderIndex">
@@ -42,8 +42,6 @@
 </template>
 
 <script>
-import fetch from "@/utils/fetch.js";
-import { Message } from "element-ui";
 export default {
   data() {
     return {
@@ -54,24 +52,17 @@ export default {
           {
             required: true,
             message: "请输入品牌名称",
-            trigger: ["blur", "change"]
-          }
-        ]
+            trigger: ["blur", "change"],
+          },
+        ],
       },
-      formData: {}
+      formData: {},
     };
   },
   methods: {
     // 显示对话框
     show(r) {
-      if (r) {
-        this.title = "编辑";
-        this.formData = JSON.parse(JSON.stringify(r));
-      } else {
-        this.title = "添加";
-        this.formData = {};
-      }
-      this.visible = true;
+      this.$utils.showEditDialog.call(this, r);
     },
     // 关闭对话框
     close() {
@@ -79,12 +70,8 @@ export default {
     },
     // 保存
     save() {
-      fetch.post("api/sale/commodityBrand/save", this.formData).then(() => {
-        Message.success("保存成功");
-        this.$emit("success");
-        this.close();
-      });
-    }
-  }
+      this.$utils.save.call(this, "api/sale/commodityBrand/save");
+    },
+  },
 };
 </script>

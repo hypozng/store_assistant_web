@@ -1,6 +1,6 @@
 <template>
   <div class="v-table">
-    <div class="search">
+    <div class="search item">
       <div v-for="(param, index) in search" :key="param.key" class="search-input">
         <div class="search-input-label">{{ param.label }}</div>
         <div class="search-input-content">
@@ -20,7 +20,7 @@
         </template>
       </div>
     </div>
-    <div v-if="tools && tools.length" class="tools">
+    <div v-if="tools && tools.length" class="tools item">
       <el-button
         v-for="(tool, index) in tools"
         :key="index"
@@ -32,7 +32,7 @@
         @click="tool.click"
       >{{ tool.label }}</el-button>
     </div>
-    <div class="content">
+    <div class="content item">
       <el-table
         :data="tableData"
         class="table"
@@ -72,6 +72,16 @@
         </el-table-column>
       </el-table>
     </div>
+    <el-pagination
+      :page-sizes="paginationSizes"
+      :layout="paginationLayout"
+      :total="total"
+      :pager-count="9"
+      background
+      class="item"
+      @size-change="handleSizeChange"
+      @current-change="handlePageChange"
+    />
   </div>
 </template>
 <script>
@@ -83,12 +93,15 @@ export default {
       logic,
       cache: {},
       tableData: [],
+      total: 0,
+      paginationLayout: "total, sizes, prev, pager, next, jumper",
+      paginationSizes: [10, 20, 30, 40, 50, 100],
       searchParameter: {
         page: 1,
         size: 10,
         sort: "id",
-        params: {}
-      }
+        params: {},
+      },
     };
   },
   mounted() {
@@ -109,6 +122,16 @@ export default {
     handleSearchInput(value, key) {
       this.$set(this.searchParameter.params, key, value);
     },
+    // 处理页面大小更改事件
+    handleSizeChange(size) {
+      this.searchParameter.size = size;
+      this.loadData();
+    },
+    // i处理页码更改事件
+    handlePageChange(page) {
+      this.searchParameter.page = page;
+      this.loadData();
+    },
     // 获取搜索栏搜索条件的值
     getSearchValue(key) {
       return this.searchParameter.params[key];
@@ -122,7 +145,7 @@ export default {
         return this.cache[param.key];
       }
       if (param.url) {
-        fetch.get(param.url).then(res => {
+        fetch.get(param.url).then((res) => {
           this.$set(this.cache, param.key, res.data);
         });
       }
@@ -134,67 +157,80 @@ export default {
         lock: true,
         text: "正在加载",
         spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)"
+        background: "rgba(0, 0, 0, 0.7)",
       });
       fetch
         .post(this.url, this.searchParameter)
-        .then(res => (this.tableData = res.data.content))
+        .then((res) => {
+          this.tableData = res.data.content;
+          this.total = res.data.total;
+        })
         .finally(() => {
           loading.close();
         });
-    }
+    },
   },
   props: {
     // URL
     url: {
       type: String,
-      require: true
+      require: true,
     },
     // 自动加载数据
     autoLoad: {
       type: Boolean,
-      default: true
+      default: true,
     },
     // 查询条件
     search: {
       type: Array,
       default() {
         return [];
-      }
+      },
     },
     // 表格的列
     columns: {
       type: Array,
       default() {
         return [];
-      }
+      },
     },
     // 工具栏按钮
     tools: {
       type: Array,
       default() {
         return [];
-      }
+      },
     },
     // 操作列按钮
     buttons: {
       type: Array,
       default() {
         return [];
-      }
+      },
     },
     // 操作列宽度
     operationColumnWidth: {
       type: [String, Number],
-      default: 250
-    }
-  }
+      default: 250,
+    },
+  },
 };
 </script>
 <style>
 .v-table {
+  width: 100%;
+  height: 100%;
   padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
+
+.v-table .item + .item {
+  margin-top: 10px;
+}
+
 .v-table .search {
   text-align: left;
   display: flex;
@@ -222,7 +258,6 @@ export default {
 
 .v-table .tools {
   text-align: left;
-  margin-top: 10px;
 }
 
 .v-table .table-header-row,
@@ -235,6 +270,6 @@ export default {
 }
 
 .v-table .content {
-  margin-top: 10px;
+  flex: 1;
 }
 </style>

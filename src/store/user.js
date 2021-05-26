@@ -11,9 +11,6 @@ export default {
     // 登录
     login({ commit }, form) {
       return fetch.post("api/sys/user/login", form).then(res => {
-        if (res.code != 0) {
-          throw res.message;
-        }
         commit("userInfo", res.data);
         return res.data;
       });
@@ -21,9 +18,6 @@ export default {
     // 退出登录
     logout({ commit }) {
       return fetch.post("api/sys/user/logout").then(res => {
-        if (res.code != 0) {
-          throw res.message;
-        }
         commit("userInfo", null);
         return res.data;
       });

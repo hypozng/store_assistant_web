@@ -1,14 +1,14 @@
 <template>
   <div>
     <edit-dialog ref="editDialog" @success="loadData" />
-    <v-table :url="url" :columns="columns" :search="search" :buttons="buttons" :tools="tools" />
+    <v-table ref="table" :url="url" :columns="columns" :search="search" :buttons="buttons" :tools="tools" />
   </div>
 </template>
 <script>
 import editDialog from "./editDialog";
 export default {
   components: {
-    editDialog
+    editDialog,
   },
   data() {
     return {
@@ -20,7 +20,7 @@ export default {
         { key: "phone", label: "电话", width: "180", align: "center" },
         { key: "birthday", label: "生日", width: "180", align: "center", render: "date" },
         { key: "address", label: "地址", width: "300" },
-        { key: "signature", label: "签名", minWidth: "300" }
+        { key: "signature", label: "签名", minWidth: "300" },
       ],
       search: [
         { key: "user", label: "用户名" },
@@ -28,13 +28,13 @@ export default {
         { key: "nickname", label: "昵称" },
         { key: "phone", label: "电话" },
         { key: "address", label: "地址" },
-        { key: "signature", label: "签名" }
+        { key: "signature", label: "签名" },
       ],
       buttons: [
         { type: "primary", label: "编辑", click: this.handleEditClick },
-        { type: "danger", label: "删除", click: this.handleDeleteClick }
+        { type: "danger", label: "删除", click: this.handleDeleteClick },
       ],
-      tools: [{ type: "success", label: "添加", click: this.handleAddClick }]
+      tools: [{ type: "success", label: "添加", click: this.handleAddClick }],
     };
   },
   methods: {
@@ -48,8 +48,11 @@ export default {
     },
     // 处理删除按钮点击事件
     handleDeleteClick(r) {
-      this.$utils.delete("api/sys/user/" + r.id);
-    }
-  }
+      this.$utils.delete.call(this, "api/sys/user/" + r.id);
+    },
+    loadData() {
+      this.$refs.table.loadData();
+    },
+  },
 };
 </script>

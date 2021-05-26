@@ -4,37 +4,35 @@
       <el-main>
         <el-form ref="form" :model="formData" :rules="rules" label-width="120px">
           <el-row>
-            <el-col :span="24">
+            <el-col :span="12">
+              <el-form-item label="姓名" prop="name">
+                <el-input v-model="formData.name" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
               <el-form-item label="用户名" prop="user">
                 <el-input v-model="formData.user" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="24">
-              <el-form-item label="姓名" prop="name">
-                <el-input v-model="formData.name" />
+            <el-col :span="12">
+              <el-form-item label="电话" prop="phone">
+                <el-input v-model="formData.phone" />
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="24">
+            <el-col :span="12">
               <el-form-item label="昵称" prop="nickname">
                 <el-input v-model="formData.nickname" />
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
-            <el-col :span="24">
-              <el-form-item label="电话" prop="phone">
-                <el-input v-model="formData.phone" />
-              </el-form-item>
-            </el-col>
-          </el-row>
+          <el-row></el-row>
           <el-row>
             <el-col :span="24">
               <el-form-item label="生日" prop="birthday">
-                <el-input v-model="formData.birthday" />
+                <el-date-picker v-model="formData.birthday" />
+                <!-- <el-input v-model="formData.birthday" /> -->
               </el-form-item>
             </el-col>
           </el-row>
@@ -55,6 +53,10 @@
         </el-form>
       </el-main>
     </el-container>
+    <span slot="footer">
+      <el-button plain size="medium" @click="close">关闭</el-button>
+      <el-button type="primary" size="medium" @click="save">保存</el-button>
+    </span>
   </el-dialog>
 </template>
 
@@ -64,7 +66,16 @@ export default {
     return {
       visible: false,
       title: "添加",
-      formData: {}
+      formData: {},
+      rules: {
+        user: [
+          {
+            required: true,
+            message: "请输入用户名",
+            trigger: ["blur", "change"],
+          },
+        ],
+      },
     };
   },
   methods: {
@@ -79,7 +90,7 @@ export default {
     // 保存数据
     save() {
       this.$utils.save.call(this, "api/sys/user/save");
-    }
-  }
+    },
+  },
 };
 </script>

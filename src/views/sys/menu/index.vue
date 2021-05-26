@@ -65,7 +65,6 @@
   </div>
 </template>
 <script>
-import { Message } from "element-ui";
 import fetch from "@/utils/fetch.js";
 export default {
   data() {
@@ -74,17 +73,17 @@ export default {
       mode: "add",
       menus: [],
       props: {
-        label: "name"
+        label: "name",
       },
       rules: {
         name: [
           {
             required: true,
             message: "请输入菜单名称",
-            trigger: ["blur"]
-          }
-        ]
-      }
+            trigger: ["blur"],
+          },
+        ],
+      },
     };
   },
   mounted() {
@@ -125,15 +124,8 @@ export default {
     },
     // 加载数据
     loadData() {
-      fetch.get("api/sys/menu").then(res => {
-        this.menus = res.data.filter(child => {
-          let parent = res.data.find(item => item.id == child.parentId);
-          if (!parent) {
-            return true;
-          }
-          parent.children = parent.children || [];
-          parent.children.push(child);
-        });
+      fetch.get("api/sys/menu").then((res) => {
+        this.menus = this.$utils.list2tree(res.data);
         let item = this.menus && this.menus[0];
         if (item) {
           this.switchToEdit(item);
@@ -156,17 +148,9 @@ export default {
     },
     // 保存数据
     save() {
-      this.$refs.form.validate(res => {
-        if (!res) {
-          return;
-        }
-        fetch.post("api/sys/menu/save", this.formData).then(() => {
-          Message.success("保存成功");
-          this.loadData();
-        });
-      });
-    }
-  }
+      this.$utils.save.call(this, "api/sys/menu/save");
+    },
+  },
 };
 </script>
 <style scoped>

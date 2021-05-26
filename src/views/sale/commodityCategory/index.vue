@@ -43,7 +43,6 @@
   </div>
 </template>
 <script>
-import { Message } from "element-ui";
 import fetch from "@/utils/fetch.js";
 export default {
   data() {
@@ -52,8 +51,8 @@ export default {
       formData: null,
       mode: "add",
       props: {
-        label: "name"
-      }
+        label: "name",
+      },
     };
   },
   mounted() {
@@ -91,21 +90,12 @@ export default {
     },
     // 处理删除按钮点击事件
     handleDeleteClick() {
-      if (!this.addMode) {
-        this.delete();
-      }
+      this.$utils.delete.call(this, "api/sale/commodityCategory/" + this.formData.id);
     },
     // 加载数据
     loadData() {
-      fetch.get("api/sale/commodityCategory").then(res => {
-        this.listData = res.data.filter(child => {
-          let parent = res.data.find(item => item.id == child.parentId);
-          if (!parent) {
-            return true;
-          }
-          parent.children = parent.children || [];
-          parent.children.push(child);
-        });
+      fetch.get("api/sale/commodityCategory").then((res) => {
+        this.listData = this.$utils.list2tree(res.data);
         let item = this.listData && this.listData[0];
         if (item) {
           this.switchToEdit(item);
@@ -116,24 +106,9 @@ export default {
     },
     // 保存
     save() {
-      fetch.post("api/sale/commodityCategory/save", this.formData).then(() => {
-        Message.success("保存成功");
-        this.addMode = false;
-        this.loadData();
-      });
+      this.$utils.save.call(this, "api/sale/commodityCategory/save");
     },
-    // 删除
-    delete() {
-      this.$confirm("确定删除这条数据吗？")
-        .then(() => {
-          fetch.delete("api/sale/commodityCategory/" + this.formData.id).then(() => {
-            Message.success("删除成功");
-            this.loadData();
-          });
-        })
-        .catch(() => {});
-    }
-  }
+  },
 };
 </script>
 <style scoped>

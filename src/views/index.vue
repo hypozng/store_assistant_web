@@ -29,12 +29,11 @@
 </template>
 <script>
 import fetch from "@/utils/fetch.js";
-import { Message } from "element-ui";
 export default {
   data() {
     return {
       menus: [],
-      userInfo: this.$store.getters.userInfo
+      userInfo: this.$store.getters.userInfo,
     };
   },
   mounted() {
@@ -53,26 +52,12 @@ export default {
     },
     // 加载菜单数据
     loadData() {
-      fetch.get("api/sys/menu").then(res => {
-        if (res.code != 0) {
-          Message.error("" + res.message);
-          return;
-        }
-        res.data.forEach(item => item.id = item.id + '');
-        this.menus = res.data.filter(child => {
-          let parent = res.data.find(item => item.id == child.parentId);
-          if (!parent) {
-            return true;
-          }
-          parent.children = parent.children || [];
-          parent.children.push(child);
-        });
-        if (this.menus && this.menus.length) {
-          this.subMenus = this.menus[0].children;
-        }
+      fetch.get("api/sys/menu").then((res) => {
+        res.data.forEach((item) => (item.id = item.id + ""));
+        this.menus = this.$utils.list2tree(res.data);
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style>
@@ -119,7 +104,7 @@ export default {
   padding: 5px 10px;
   font-size: 12px;
   cursor: pointer;
-  color: #A0A0A0;
+  color: #a0a0a0;
 }
 .user-button:hover {
   color: white;
