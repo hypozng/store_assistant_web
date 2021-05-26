@@ -18,11 +18,21 @@ let routes = [{
   {
     path: "/index",
     component: () => import("@/views/index.vue"),
-    children: businessRoutes
+    children: businessRoutes,
+    meta: {
+      title: "首页"
+    }
   },
   {
     path: "/login",
-    component: () => import("@/views/sys/login.vue")
+    component: () => import("@/views/sys/user/login.vue"),
+    meta: {
+      title: "登录"
+    }
+  },
+  {
+    path: "*",
+    redirect: "/404"
   },
 ];
 
@@ -39,6 +49,11 @@ router.beforeEach((to, from, next) => {
     next("/login");
     return;
   }
+  let title = "商店管理系统";
+  if (to.meta.title) {
+    title += " - " + to.meta.title;
+  }
+  document.title = title;
   next();
 });
 

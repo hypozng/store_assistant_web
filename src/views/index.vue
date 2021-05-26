@@ -10,17 +10,17 @@
       </div>
       <el-menu mode="vertical" background-color="#333399" text-color="white" active-text-color="#FFD04B">
         <template v-for="menu in menus">
-          <el-submenu v-if="menu.children" :key="menu.id" :index="''+menu.id">
+          <el-submenu v-if="menu.children" :key="menu.id" :index="menu.id">
             <template slot="title">{{menu.name}}</template>
             <template v-for="subMenu in menu.children">
-              <el-submenu v-if="subMenu.children" :key="subMenu.id" :index="''+subMenu.id">
+              <el-submenu v-if="subMenu.children" :key="subMenu.id" :index="subMenu.id">
                 <template slot="title">{{subMenu.name}}</template>
                 <el-menu-item v-for="menuItem in subMenu.children" :key="menuItem.id" @click="handleMenuItemClick(menuItem)">{{menuItem.name}}</el-menu-item>
               </el-submenu>
-              <el-menu-item v-else :key="subMenu.id" :index="''+subMenu.id" @click="handleMenuItemClick(subMenu)">{{subMenu.name}}</el-menu-item>
+              <el-menu-item v-else :key="subMenu.id" :index="subMenu.id" @click="handleMenuItemClick(subMenu)">{{subMenu.name}}</el-menu-item>
             </template>
           </el-submenu>
-          <el-menu-item v-else :key="menu.id" :index="''+menu.id" @click="handleMenuItemClick(menu)">{{menu.name}}</el-menu-item>
+          <el-menu-item v-else :key="menu.id" :index="menu.id" @click="handleMenuItemClick(menu)">{{menu.name}}</el-menu-item>
         </template>
       </el-menu>
     </div>
@@ -58,6 +58,7 @@ export default {
           Message.error("" + res.message);
           return;
         }
+        res.data.forEach(item => item.id = item.id + '');
         this.menus = res.data.filter(child => {
           let parent = res.data.find(item => item.id == child.parentId);
           if (!parent) {
@@ -92,13 +93,14 @@ export default {
 
 .user-box {
   height: 50px;
-  background-color: #333399;
+  color: white;
   display: flex;
   flex-direction: row;
   align-items: center;
-  box-shadow: 0 0 1px black;
   margin-bottom: 1px;
-  color: white;
+  border-right: 1px solid solid 1px #e6e6e6;
+  background-color: #333399;
+  box-shadow: 0 0 1px black;
 }
 
 .user-head-photo {
@@ -129,5 +131,6 @@ export default {
 }
 .router-view {
   flex: 1;
+  overflow: auto;
 }
 </style>

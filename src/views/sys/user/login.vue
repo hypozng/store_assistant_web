@@ -1,7 +1,7 @@
 <template>
   <div class="login-page">
     <div class="login-box">
-      <h2 class="title">经销存管理系统</h2>
+      <h2 class="title">商店管理系统</h2>
       <el-input v-model="username" class="input" placeholder="账号">
         <i slot="prefix" class="el-input__icon el-icon-user"></i>
       </el-input>
@@ -41,7 +41,7 @@ export default {
 .login-page {
   height: 100%;
   padding-right: 200px;
-  background-image: url("../../assets/login/bg3.jpeg");
+  background-image: url("~@/assets/login/bg3.jpeg");
   display: flex;
   flex-direction: row;
   align-items: center;

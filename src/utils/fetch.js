@@ -1,8 +1,9 @@
 import axios from "axios";
-// import Vue from "vue";
 import {
   Message
 } from "element-ui";
+import global from "@/utils/global.js";
+
 // axios 配置
 axios.defaults.timeout = 30000000;
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
@@ -23,7 +24,7 @@ axios.interceptors.response.use(res => {
       Message.error("" + res.data.message);
       return Promise.reject(res.data.message);
     case -10:
-      axios.vue.$router.replace("/login");
+      global.vue.$router.replace("/login");
       return Promise.reject(res.data.message);
   }
   return res.data;

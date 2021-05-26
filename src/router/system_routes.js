@@ -1,4 +1,7 @@
 export default [{
+    path: "/404",
+    component: () => import("@/views/sys/404.vue")
+  }, {
     name: "菜单管理",
     path: "/sys_menu",
     component: () => import("@/views/sys/menu/index.vue")

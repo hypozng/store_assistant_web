@@ -94,7 +94,7 @@ export default {
     // 将页面模式切换为添加模式
     switchToAdd(parentId) {
       parentId = parentId || 0;
-      this.formData = { parentId };
+      this.formData = { parentId, disabled: 0 };
       this.mode = "add";
     },
     // 将页面切换为编辑模式
@@ -121,7 +121,7 @@ export default {
       if (this.mode == "add") {
         return;
       }
-      this.delete();
+      this.$utils.delete.call(this, "api/sys/menu/" + this.formData.id);
     },
     // 加载数据
     loadData() {
@@ -144,28 +144,15 @@ export default {
     },
     // 处理节点点击事件
     handleNodeClick(menu) {
-      menu = JSON.parse(JSON.stringify(menu));
-      delete menu.children;
-      this.formData = menu;
-      this.editMode = true;
+      this.switchToEdit(menu);
     },
     // 添加同级菜单
     addSiblingsMenu() {
-      let formData = this.formData;
-      this.formData = {
-        parentId: formData.parentId,
-        disabled: 0
-      };
-      this.editMode = false;
+      this.switchToAdd(this.formData.parentId);
     },
     // 添加子菜单
     addSubMenu() {
-      let formData = this.formData;
-      this.formData = {
-        parentId: formData.id,
-        disabled: 0
-      };
-      this.editMode = false;
+      this.switchToAdd(this.formData.id);
     },
     // 保存数据
     save() {
@@ -177,18 +164,6 @@ export default {
           Message.success("保存成功");
           this.loadData();
         });
-      });
-    },
-    // 删除菜单
-    delete() {
-      this.$confirm("确定删除这条数据？").then(() => {
-        fetch
-          .delete("api/sys/menu/" + this.formData.id)
-          .then(() => {
-            Message.success("删除成功");
-            this.loadData();
-          })
-          .catch(() => {});
       });
     }
   }
