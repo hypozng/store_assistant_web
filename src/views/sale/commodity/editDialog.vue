@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="visible" :title="`商品${title}`" width="1000px" :close-on-click-modal="false" :append-to-body="false" :modal-append-to-body="false">
-    <el-form ref="form" :model="formData" label-width="120px" align="left">
+    <el-form ref="form" :model="formData" size="medium" label-width="120px" align="left">
       <el-row>
         <el-col :span="24">
           <v-input v-model="formData.name" label="商品名称" prop="name" />
@@ -8,18 +8,10 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="种类" prop="categoryId">
-            <el-select v-model="formData.categoryId">
-              <el-option v-for="category in categoryOptions" :key="category.id" :label="category.name" :value="category.id" />
-            </el-select>
-          </el-form-item>
+          <v-select label="种类" prop="categoryId" v-model="formData.categoryId" url="api/sale/commodityCategory" />
         </el-col>
         <el-col :span="12">
-          <el-form-item label="品牌" prop="brandId" style="width: 100%">
-            <el-select v-model="formData.brandId">
-              <el-option v-for="brand in brandOptions" :key="brand.id" :label="brand.name" :value="brand.id" />
-            </el-select>
-          </el-form-item>
+          <v-select label="品牌" prop="brandId" v-model="formData.brandId" url="api/sale/commodityBrand" />
         </el-col>
       </el-row>
       <el-row>
@@ -27,21 +19,20 @@
           <v-input v-model="formData.model" label="型号" prop="model" />
         </el-col>
         <el-col :span="12">
-          <el-form-item label="价格" prop="price">
-            <el-input-number v-model="formData.price" :precision="2" :step="0.1" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
           <v-input v-model="formData.code" label="编码" prop="code" />
         </el-col>
       </el-row>
       <el-row>
+        <el-col :span="12">
+          <v-money label="销售价格" prop="salePrice" v-model="formData.salePrice" :disabled="mode!='add'" />
+        </el-col>
+        <el-col :span="12">
+          <v-money label="采购价格" prop="purchasePrice" v-model="formData.purchasePrice" :disabled="mode!='add'" />
+        </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="24">
-          <el-form-item label="备注" prop="remark">
-            <el-input v-model="formData.remark" type="textarea" rows="3" />
-          </el-form-item>
+          <v-textarea label="备注" prop="remark" v-model="formData.remark" />
         </el-col>
       </el-row>
     </el-form>
@@ -53,25 +44,22 @@
 </template>
 
 <script>
-import fetch from "@/utils/fetch.js";
 export default {
   data() {
     return {
       visible: false,
       title: "添加",
+      mode: "add",
       formData: {},
       brandOptions: [],
       categoryOptions: [],
     };
   },
-  mounted() {
-    this.loadBrandOptions();
-    this.loadCategoryOptions();
-  },
   methods: {
     // 显示对话框
     show(r) {
-      this.$utils.showEditDialog.call(this, r, { price: 0 });
+      this.mode = r ? "edit" : "add";
+      this.$utils.showEditDialog.call(this, r, { salePrice: 0, purchasePrice: 0 });
     },
     // 关闭对话框
     close() {
@@ -80,18 +68,6 @@ export default {
     // 保存
     save() {
       this.$utils.save.call(this, "api/sale/commodity/save");
-    },
-    // 加载品牌数据
-    loadBrandOptions() {
-      fetch.get("api/sale/commodityBrand").then((res) => {
-        this.brandOptions = res.data;
-      });
-    },
-    // 加载种类数据
-    loadCategoryOptions() {
-      fetch.get("api/sale/commodityCategory").then((res) => {
-        this.categoryOptions = res.data;
-      });
     },
   },
 };

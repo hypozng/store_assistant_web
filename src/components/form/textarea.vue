@@ -1,6 +1,15 @@
 <template>
   <el-form-item :label="label" :prop="prop" :required="required" :rules="rules">
-    <el-input :value="value" @input="$emit('input', $event)" :style="vStyle" :disabled="disabled" :placeholder="placeholder" :size="size" :type="type" />
+    <el-input
+      :value="value"
+      @input="$emit('input', $event)"
+      :style="vStyle"
+      :disabled="disabled"
+      :placeholder="placeholder"
+      :size="size"
+      type="textarea"
+      :rows="rows"
+    />
   </el-form-item>
 </template>
 <script>
@@ -49,8 +58,9 @@ export default {
     size: {
       type: String,
     },
-    type: {
-      type: String,
+    rows: {
+      type: [String, Number],
+      default: 3,
     },
   },
 };

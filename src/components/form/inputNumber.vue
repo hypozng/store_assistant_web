@@ -1,6 +1,17 @@
 <template>
   <el-form-item :label="label" :prop="prop" :required="required" :rules="rules">
-    <el-input :value="value" @input="$emit('input', $event)" :style="vStyle" :disabled="disabled" :placeholder="placeholder" :size="size" :type="type" />
+    <el-input-number
+      :value="value"
+      @input="$emit('input', $event)"
+      :style="vStyle"
+      :disabled="disabled"
+      :size="size"
+      :placeholder="placeholder"
+      :min="min"
+      :max="max"
+      :step="step"
+      :precision="precision"
+    />
   </el-form-item>
 </template>
 <script>
@@ -49,8 +60,17 @@ export default {
     size: {
       type: String,
     },
-    type: {
-      type: String,
+    min: {
+      type: Number,
+    },
+    max: {
+      type: Number,
+    },
+    step: {
+      type: Number,
+    },
+    precision: {
+      type: Number,
     },
   },
 };

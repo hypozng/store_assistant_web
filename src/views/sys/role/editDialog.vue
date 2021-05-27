@@ -5,16 +5,12 @@
         <el-form ref="form" :model="formData" :rules="rules" label-width="120px">
           <el-row>
             <el-col :span="24">
-              <el-form-item label="角色名称" prop="name">
-                <el-input v-model="formData.name" />
-              </el-form-item>
+              <v-input label="角色名称" prop="name" v-model="formData.name" />
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
-              <el-form-item label="角色编码" prop="code">
-                <el-input v-model="formData.code" />
-              </el-form-item>
+              <v-input label="角色编码" prop="code" v-model="formData.code" />
             </el-col>
           </el-row>
           <el-row>
@@ -29,9 +25,7 @@
           </el-row>
           <el-row>
             <el-col :span="24">
-              <el-form-item label="备注">
-                <el-input v-model="formData.remark" type="textarea" rows="3" />
-              </el-form-item>
+              <v-textarea label="备注" prop="remark" v-model="formData.remark" />
             </el-col>
           </el-row>
         </el-form>
@@ -48,20 +42,9 @@ export default {
   data() {
     return {
       visible: false,
-      rules: {
-        name: {
-          required: true,
-          message: "请输入角色名称",
-          trigger: ["blur", "change"]
-        },
-        code: {
-          required: true,
-          message: "请输入角色编码",
-          trigger: ["blur", "change"]
-        }
-      },
+      rules: {},
       formData: {},
-      title: ""
+      title: "",
     };
   },
   methods: {
@@ -76,7 +59,7 @@ export default {
     // 保存数据
     save() {
       this.$utils.save.call(this, "api/sys/role/save");
-    }
-  }
+    },
+  },
 };
 </script>

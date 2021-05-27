@@ -7,23 +7,17 @@
           <el-main>
             <el-row>
               <el-col :span="24">
-                <el-form-item prop="name" label="菜单名称">
-                  <el-input v-model="formData.name" />
-                </el-form-item>
+                <v-input label="菜单名称" prop="name" v-model="formData.name" />
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
-                <el-form-item prop="url" label="菜单地址">
-                  <el-input v-model="formData.url" />
-                </el-form-item>
+                <v-input label="菜单地址" prop="url" v-model="formData.url" />
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="16">
-                <el-form-item prop="params" label="菜单参数">
-                  <el-input v-model="formData.params" />
-                </el-form-item>
+                <v-input label="菜单参数" prop="params" v-model="formData.params" />
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="disabled" label="禁用">
@@ -36,16 +30,12 @@
             </el-row>
             <el-row>
               <el-col :span="24">
-                <el-form-item prop="orderIndex" label="排序">
-                  <el-slider v-model="formData.orderIndex" />
-                </el-form-item>
+                <v-slider label="排序" prop="orderIndex" v-model="formData.orderIndex" />
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
-                <el-form-item prop="remark" label="备注">
-                  <el-input v-model="formData.remark" type="textarea" rows="3" />
-                </el-form-item>
+                <v-textarea label="备注" prop="remark" v-model="formData.remark" />
               </el-col>
             </el-row>
             <el-row v-if="mode=='edit'">

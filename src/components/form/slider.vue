@@ -1,6 +1,6 @@
 <template>
   <el-form-item :label="label" :prop="prop" :required="required" :rules="rules">
-    <el-input :value="value" @input="$emit('input', $event)" :style="vStyle" :disabled="disabled" :placeholder="placeholder" :size="size" :type="type" />
+    <el-slider :value="value" @input="$emit('input', $event)" :style="vStyle" :disabled="disabled" :placeholder="placeholder" :size="size" :type="type" />
   </el-form-item>
 </template>
 <script>

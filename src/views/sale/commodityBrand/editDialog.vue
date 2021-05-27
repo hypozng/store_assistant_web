@@ -5,30 +5,17 @@
         <el-form :model="formData" label-width="120px" align="left" :rules="rules">
           <el-row>
             <el-col :span="24">
-              <el-form-item label="品牌名称" prop="name" required>
-                <el-input v-model="formData.name" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <!-- <el-row>
-            <el-col :span="24">
-              <el-form-item label="图标" prop="icon">
-                <el-input v-model="formData.icon" />
-              </el-form-item>
-            </el-col>
-          </el-row>-->
-          <el-row>
-            <el-col :span="24">
-              <el-form-item label="排序" prop="orderIndex">
-                <el-slider v-model="formData.orderIndex" />
-              </el-form-item>
+              <v-input label="品牌名称" prop="name" required v-model="formData.name" />
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
-              <el-form-item label="备注" prop="remark">
-                <el-input v-model="formData.remark" type="textarea" rows="3" />
-              </el-form-item>
+              <v-slider label="排序" prop="orderIndex" v-model="formData.orderIndex" />
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <v-textarea label="备注" prop="remark" v-model="formData.remark" />
             </el-col>
           </el-row>
         </el-form>
@@ -47,15 +34,7 @@ export default {
     return {
       visible: false,
       title: "添加",
-      rules: {
-        name: [
-          {
-            required: true,
-            message: "请输入品牌名称",
-            trigger: ["blur", "change"],
-          },
-        ],
-      },
+      rules: {},
       formData: {},
     };
   },
