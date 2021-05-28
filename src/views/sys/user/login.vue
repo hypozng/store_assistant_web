@@ -68,5 +68,6 @@ export default {
 
 .title {
   height: 100px;
+  text-align: center;
 }
 </style>

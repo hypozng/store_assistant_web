@@ -4,7 +4,7 @@
     <div class="content">
       <el-container>
         <el-main>
-          <el-form v-if="formData" ref="form" :model="formData" :size="medium" label-width="120px" align="left">
+          <el-form v-if="formData" ref="form" :model="formData" size="medium" label-width="120px" align="left">
             <el-row>
               <el-col :span="24">
                 <v-input label="种类名称" prop="name" v-model="formData.name" />

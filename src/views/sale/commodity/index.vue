@@ -1,15 +1,18 @@
 <template>
   <div>
     <edit-dialog ref="editDialog" @success="loadData" />
+    <price-list-dialog ref="priceListDialog" />
     <v-table ref="table" :url="url" :columns="columns" :search="search" :buttons="buttons" :tools="tools" />
   </div>
 </template>
 
 <script>
 import editDialog from "./editDialog";
+import priceListDialog from "./priceListDialog";
 export default {
   components: {
     editDialog,
+    priceListDialog
   },
   data() {
     return {
@@ -19,7 +22,8 @@ export default {
         { key: "brandName", label: "品牌", align: "center", width: "120" },
         { key: "categoryName", label: "种类", align: "center", width: "200" },
         { key: "model", label: "型号", align: "center", width: "200" },
-        { key: "price", label: "价格", align: "center", width: "120" },
+        { key: "salePrice", label: "销售价格", align: "center", width: "120" },
+        { key: "purchasePrice", label: "采购价格", align: "center", width: "120" },
         { key: "amount", label: "库存数量", align: "center", width: "100" },
         { key: "remark", label: "备注", align: "left", minWidth: "300" },
       ],
@@ -30,7 +34,7 @@ export default {
         { key: "price", label: "价格" },
       ],
       buttons: [
-        // { label: "详情", type: "info", click: this.handleRowDetailClick },
+        { label: "调价记录", type: "primary", click: this.handlePriceRecordClick },
         { label: "编辑", type: "primary", click: this.handleRowEditClick },
         { label: "删除", type: "danger", click: this.handleRowDeleteClick },
       ],
@@ -47,7 +51,9 @@ export default {
       this.$refs.editDialog.show(r);
     },
     // 处理表格数据详情按钮
-    handleRowDetailClick() {},
+    handlePriceRecordClick(r) {
+      this.$refs.priceListDialog.show(r.id);
+    },
     // 处理表格数据删除按钮delete事件
     handleRowDeleteClick(r) {
       this.$utils.delete.call(this, "api/sale/commodity/" + r.id);

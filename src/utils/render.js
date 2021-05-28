@@ -19,6 +19,10 @@ const render = {
   // 禁用状态
   disable(val) {
     return val ? "禁用" : "启用";
+  },
+  // 金额
+  money(r) {
+    return r;
   }
 };
 

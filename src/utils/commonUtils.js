@@ -64,7 +64,7 @@ const utils = {
           this.loadData();
         }
         if (typeof this.$emit === "function") {
-          this.$emit("success");
+          this.$emit("success", res.data);
         }
         return res;
       });
@@ -85,15 +85,16 @@ const utils = {
   },
 
   // 显示编辑对话框
-  showEditDialog(r, initData) {
-    if (r) {
+  showEditDialog(r, key) {
+    key = key || "id";
+    if (r && r[key]) {
       this.title = "编辑";
       this.formData = JSON.parse(JSON.stringify(r));
     } else {
       this.title = "添加";
       this.$nextTick(() => {
-        this.$refs.form.resetFields();
-        this.formData = initData || {};
+        this.$refs.form && this.$refs.form.resetFields();
+        this.formData = r ? r : JSON.parse(JSON.stringify(r));
       });
     }
     this.visible = true;

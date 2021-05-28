@@ -12,7 +12,7 @@
               :value="option[param.props&&param.props.value||'id']"
             />
           </el-select>
-          <el-input v-else :value="searchParameter.params[param.key]" @input="handleSearchInput($event, param.key)" size="small" clearable />
+          <el-input v-else :value="getSearchValue(param.key)" @input="handleSearchInput($event, param.key)" size="small" clearable />
         </div>
         <template v-if="index == search.length - 1">
           <el-button type="primary" size="small" plain @click="handleSearchClick" style="margin-left: 10px">搜索</el-button>
@@ -92,6 +92,8 @@ export default {
     return {
       logic,
       cache: {},
+      params: {},
+      searchData: {},
       tableData: [],
       total: 0,
       paginationLayout: "total, sizes, prev, pager, next, jumper",
@@ -99,9 +101,9 @@ export default {
       searchParameter: {
         page: 1,
         size: 10,
-        sort: "id",
-        params: {},
-      },
+        sort: this.sort,
+        dir: this.dir
+      }
     };
   },
   mounted() {
@@ -116,11 +118,11 @@ export default {
     },
     // 处理充值按钮click事件
     handleResetClick() {
-      this.searchParameter.params = {};
+      this.resetSearch();
     },
     // 处理搜索条件input事件
     handleSearchInput(value, key) {
-      this.$set(this.searchParameter.params, key, value);
+      this.$set(this.search, key, value);
     },
     // 处理页面大小更改事件
     handleSizeChange(size) {
@@ -134,7 +136,11 @@ export default {
     },
     // 获取搜索栏搜索条件的值
     getSearchValue(key) {
-      return this.searchParameter.params[key];
+      return this.searchData[key];
+    },
+    // 重置搜索条件
+    resetSearch() {
+      this.searchData = {};
     },
     // 获取搜索条件数据
     getParamData(param, defaultValue) {
@@ -145,7 +151,7 @@ export default {
         return this.cache[param.key];
       }
       if (param.url) {
-        fetch.get(param.url).then((res) => {
+        fetch.get(param.url).then(res => {
           this.$set(this.cache, param.key, res.data);
         });
       }
@@ -157,64 +163,86 @@ export default {
         lock: true,
         text: "正在加载",
         spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
+        background: "rgba(0, 0, 0, 0.7)"
       });
+      this.searchParameter.params = {
+        ...this.params,
+        ...this.searchData
+      };
       fetch
         .post(this.url, this.searchParameter)
-        .then((res) => {
+        .then(res => {
           this.tableData = res.data.content;
           this.total = res.data.total;
         })
         .finally(() => {
           loading.close();
         });
+    }
+  },
+  watch: {
+    sort(val) {
+      this.searchParameter.sort = val;
     },
+    dir(val) {
+      this.searchParameter.dir = val;
+    }
   },
   props: {
     // URL
     url: {
       type: String,
-      require: true,
+      require: true
     },
     // 自动加载数据
     autoLoad: {
       type: Boolean,
-      default: true,
+      default: true
     },
     // 查询条件
     search: {
       type: Array,
       default() {
         return [];
-      },
+      }
     },
     // 表格的列
     columns: {
       type: Array,
       default() {
         return [];
-      },
+      }
     },
     // 工具栏按钮
     tools: {
       type: Array,
       default() {
         return [];
-      },
+      }
     },
     // 操作列按钮
     buttons: {
       type: Array,
       default() {
         return [];
-      },
+      }
     },
     // 操作列宽度
     operationColumnWidth: {
       type: [String, Number],
-      default: 250,
+      default: 250
     },
-  },
+    // 排序列
+    sort: {
+      type: String,
+      default: "id"
+    },
+    // 排序方向
+    dir: {
+      type: String,
+      default: "asc"
+    }
+  }
 };
 </script>
 <style>
