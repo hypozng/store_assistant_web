@@ -1,5 +1,6 @@
 import global from "./global.js";
 import fetch from "./fetch.js";
+import render from "./render.js";
 import {
   Message
 } from "element-ui";
@@ -12,6 +13,12 @@ const utils = {
       return null;
     }
     return fn.call(this, arg);
+  },
+
+  // 渲染
+  render(method, val) {
+    let fn = render[method];
+    return fn ? fn(val) : val;
   },
 
   // 将list转换成tree

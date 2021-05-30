@@ -21,8 +21,9 @@ const render = {
     return val ? "禁用" : "启用";
   },
   // 金额
-  money(r) {
-    return r;
+  money(val) {
+    val = isNaN(val) ? 0 : 0 + val;
+    return "￥" + val.toFixed(2);
   }
 };
 

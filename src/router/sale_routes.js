@@ -18,5 +18,12 @@ export default [{
     meta: {
       title: "商品种类管理"
     }
+  },
+  {
+    path: "/sale",
+    component: () => import("@/views/sale/sale/index.vue"),
+    meta: {
+      title: "销售"
+    }
   }
 ];

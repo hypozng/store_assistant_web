@@ -9,6 +9,7 @@ import global from "@/utils/global.js";
 import commonUtils from "@/utils/commonUtils.js";
 
 import vTable from "@/components/table/index.vue";
+import vImage from "@/components/form/image.vue";
 import vInput from "@/components/form/input.vue";
 import vSlider from "@/components/form/slider.vue";
 import vTextarea from "@/components/form/textarea.vue";
@@ -21,6 +22,7 @@ Vue.prototype.$utils = commonUtils;
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.component("vTable", vTable);
+Vue.component("vImage", vImage);
 Vue.component("vInput", vInput);
 Vue.component("vTextarea", vTextarea);
 Vue.component("vInputNumber", vInputNumber);

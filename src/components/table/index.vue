@@ -299,5 +299,6 @@ export default {
 
 .v-table .content {
   flex: 1;
+  overflow: auto;
 }
 </style>
