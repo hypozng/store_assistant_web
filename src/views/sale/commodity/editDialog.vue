@@ -4,24 +4,22 @@
     <el-dialog :visible.sync="visible" :title="`商品${title}`" width="1000px" :close-on-click-modal="false" :append-to-body="false" :modal-append-to-body="false">
       <el-form ref="form" :model="formData" size="medium" label-width="120px" align="left">
         <el-row>
-          <el-col :span="24">
-            <v-input v-model="formData.name" label="商品名称" prop="name" />
-          </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="12">
+            <v-input v-model="formData.name" label="名称" prop="name" />
             <v-select label="种类" prop="categoryId" v-model="formData.categoryId" url="api/sale/commodityCategory" />
-          </el-col>
-          <el-col :span="12">
             <v-select label="品牌" prop="brandId" v-model="formData.brandId" url="api/sale/commodityBrand" />
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
             <v-input v-model="formData.model" label="型号" prop="model" />
           </el-col>
           <el-col :span="12">
-            <v-input v-model="formData.code" label="编码" prop="code" />
+            <f-image v-model="formData.image" label="图片" prop="image" />
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <v-input v-model="formData.code" label="货号" prop="code" />
+          </el-col>
+          <el-col :span="12">
+            <v-input v-model="formData.sku" label="SKU" prop="code" />
           </el-col>
         </el-row>
         <el-row @click.native="handlePriceClick">
@@ -30,6 +28,11 @@
           </el-col>
           <el-col :span="12">
             <v-money label="采购价格" prop="purchasePrice" v-model="formData.purchasePrice" :disabled="mode!='add'" />
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <v-textarea label="详细信息" prop="detail" v-model="formData.detail" />
           </el-col>
         </el-row>
         <el-row>
@@ -57,6 +60,7 @@ export default {
       visible: false,
       title: "添加",
       mode: "add",
+      imageUrl: "",
       formData: {},
       brandOptions: [],
       categoryOptions: []

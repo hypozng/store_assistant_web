@@ -13,8 +13,8 @@
       </div>
       <ul class="commodity-list">
         <li v-for="commodity in commodityList" :key="commodity.id" class="commodity-list-item" @click="handleCommodityClick(commodity)">
-          <v-image :src="commodity.image" class="commodity-image" icon-style="font-size:100px" />
-          <div class="commodity-title">{{commodity.detail}}</div>
+          <v-attachment-image :value="commodity.image" disabled class="commodity-image" icon-style="font-size:100px" />
+          <div class="commodity-title">{{commodity.name}}</div>
           <span class="commodity-price">{{$utils.render("money", commodity.salePrice)}}</span>
         </li>
       </ul>
@@ -22,7 +22,7 @@
     <div class="order-box">
       <ul class="order-list">
         <li v-for="order in orderList" :key="order.commodityId" class="order-list-item">
-          <v-image :src="order.image" class="order-image" />
+          <v-attachment-image :value="order.image" disabled class="order-image" />
           <div class="order-list-item-right">
             <span class="order-title" :title="order.name">{{order.name}}</span>
             <span class="order-price">{{$utils.render("money", order.salePrice)}}</span>
@@ -49,7 +49,7 @@ export default {
       orderInfo: {},
       categoryOptions: [],
       brandOptions: [],
-      searchParameter: { params: {} },
+      searchParameter: { params: {} }
     };
   },
   mounted() {
@@ -59,25 +59,24 @@ export default {
   },
   methods: {
     handleCommodityClick(commodity) {
-      let order = this.orderList.find((item) => item.commodityId == commodity.id);
+      let order = this.orderList.find(item => item.commodityId == commodity.id);
       if (order) {
         order.amount += 1;
         return;
       }
       this.orderList.push({
         commodityId: commodity.id,
-        name: commodity.detail,
+        name: commodity.name,
         image: commodity.image,
         salePrice: commodity.salePrice,
         purchasePrice: commodity.purchasePrice,
-        amount: 1,
+        amount: 1
       });
-      console.log(this.orderList);
       this.orderInfo.amount = this.orderList.reduce((s, n) => s + n.amount, 0);
       this.orderInfo.salePrice = this.orderList.reduce((s, n) => s + n.salePrice * n.amount, 0);
     },
     handleOrderAmountInput(id, val) {
-      let order = this.orderList.find((item) => item.commodityId == id);
+      let order = this.orderList.find(item => item.commodityId == id);
       if (order) {
         order.amount = val;
         this.orderInfo.amount = this.orderList.reduce((s, n) => s + n.amount, 0);
@@ -85,7 +84,7 @@ export default {
       }
     },
     handleOrderDeleteClick(id) {
-      let order = this.orderList.find((item) => item.commodityId == id);
+      let order = this.orderList.find(item => item.commodityId == id);
       if (order) {
         this.orderList.splice(this.orderList.indexOf(order), 1);
         this.orderInfo.amount = this.orderList.reduce((s, n) => s + n.amount, 0);
@@ -98,11 +97,11 @@ export default {
         lock: true,
         text: "正在加载",
         spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
+        background: "rgba(0, 0, 0, 0.7)"
       });
       fetch
         .post("api/sale/commodity/query", this.searchParameter)
-        .then((res) => {
+        .then(res => {
           this.commodityList = res.data;
         })
         .finally(() => {
@@ -111,17 +110,17 @@ export default {
     },
     // 加载种类数据
     loadCategoryOptions() {
-      fetch.get("api/sale/commodityCategory").then((res) => {
+      fetch.get("api/sale/commodityCategory").then(res => {
         this.categoryOptions = res.data;
       });
     },
     // 加载品牌数据
     loadBrandOptions() {
-      fetch.get("api/sale/commodityBrand").then((res) => {
+      fetch.get("api/sale/commodityBrand").then(res => {
         this.brandOptions = res.data;
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>

@@ -38,7 +38,7 @@ export default {
           this.$router.replace("/index");
         })
         .finally(() => {
-          this.loginLoading;
+          this.loginLoading = false;
         });
     },
   },

@@ -1,84 +1,84 @@
 <template>
-  <el-image
-    :src="src"
-    :fit="fit"
-    :alt="alt"
-    :referrer-policy="referrerPolicy"
-    :lazy="lazy"
-    :preview-src-list="previewSrcList"
-    :z-index="zIndex"
-    :style="imageStyle"
-    :class="imageClassName"
-  >
-    <div slot="default" class="v-image-slot" :style="defaultStyle" :class="defaultClassName">
-      <i class="el-icon-picture-outline v-icon" :style="iconStyle" :class="iconClassName" />
-    </div>
-    <div slot="error" class="v-image-slot" :style="defaultStyle" :class="defaultClassName">
-      <i class="el-icon-picture-outline v-icon" :style="iconStyle" :class="iconClassName" />
-    </div>
-  </el-image>
+  <el-form-item :label="label" :prop="prop" :required="required" :rules="rules">
+    <v-attachment-image
+      :value="value"
+      @input="$emit('input', $event)"
+      :style="vStyle"
+      :disabled="disabled"
+      :placeholder="placeholder"
+      :size="size"
+      :type="type"
+      class="f-image"
+      style="background-color: transparent"
+    />
+  </el-form-item>
 </template>
 <script>
+import vAttachmentImage from "../ui/attachmentImage";
 export default {
+  components: {
+    vAttachmentImage
+  },
   data() {
-    return {};
+    return {
+      rules: this.required
+        ? [
+            {
+              required: true,
+              message: "请输入" + this.label,
+              trigger: ["blur", "change"]
+            }
+          ]
+        : null
+    };
+  },
+  methods: {
+    handleSuccess(res) {
+      console.log("success", res);
+    }
   },
   props: {
-    src: {
+    label: {
       type: String,
+      default: ""
     },
-    fit: {
+    prop: {
       type: String,
-      default: "cover",
+      default: ""
     },
-    alt: {
-      type: String,
-    },
-    referrerPolicy: {
-      type: String,
-    },
-    lazy: {
+    required: {
       type: Boolean,
-      default: false,
+      default: false
     },
-    previewSrcList: {
-      type: Array,
+    value: {
+      default: null
     },
-    zIndex: {
-      type: Number,
+    vStyle: {
+      type: String
     },
-    imageStyle: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    placeholder: {
       type: String,
+      default: "请输入"
     },
-    imageClassName: {
-      type: String,
+    size: {
+      type: String
     },
-    defaultStyle: {
-      type: String,
-    },
-    defaultClassName: {
-      type: String,
-    },
-    iconStyle: {
-      type: String,
-    },
-    iconClassName: {
-      type: String,
-    },
-  },
+    type: {
+      type: String
+    }
+  }
 };
 </script>
 <style>
-.v-image-slot {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #e0e0e0;
-}
-.v-icon {
-  font-size: 50px;
-  color: white;
+.f-image {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
 }
 </style>

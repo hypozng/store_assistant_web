@@ -122,7 +122,7 @@ export default {
     },
     // 处理搜索条件input事件
     handleSearchInput(value, key) {
-      this.$set(this.search, key, value);
+      this.$set(this.searchData, key, value);
     },
     // 处理页面大小更改事件
     handleSizeChange(size) {
