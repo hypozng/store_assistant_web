@@ -105,6 +105,18 @@ const utils = {
       });
     }
     this.visible = true;
+  },
+
+  // 复制文本
+  copy(text) {
+    let textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    let result = document.execCommand("copy");
+    document.body.removeChild(textarea);
+    return result;
+
   }
 };
 

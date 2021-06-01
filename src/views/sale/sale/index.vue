@@ -14,8 +14,15 @@
       <ul class="commodity-list">
         <li v-for="commodity in commodityList" :key="commodity.id" class="commodity-list-item" @click="handleCommodityClick(commodity)">
           <v-attachment-image :value="commodity.image" disabled class="commodity-image" icon-style="font-size:100px" />
-          <div class="commodity-title">{{commodity.name}}</div>
-          <span class="commodity-price">{{$utils.render("money", commodity.salePrice)}}</span>
+          <span class="commodity-title" :title="commodity.name">{{commodity.name}}</span>
+          <span class="commodity-sku">
+            <span :title="commodity.sku">{{commodity.sku}}</span>
+            <i class="el-icon-document-copy" title="点击复制" @click.stop="$utils.copy(commodity.sku)"></i>
+          </span>
+          <div class="commodity-item-footer">
+            <span class="commodity-price">{{$utils.render("money", commodity.salePrice)}}</span>
+            <span class="commodity-amount">{{commodity.amount || 0}}</span>
+          </div>
         </li>
       </ul>
     </div>
@@ -49,7 +56,7 @@ export default {
       orderInfo: {},
       categoryOptions: [],
       brandOptions: [],
-      searchParameter: { params: {} }
+      searchParameter: { params: {} },
     };
   },
   mounted() {
@@ -59,7 +66,7 @@ export default {
   },
   methods: {
     handleCommodityClick(commodity) {
-      let order = this.orderList.find(item => item.commodityId == commodity.id);
+      let order = this.orderList.find((item) => item.commodityId == commodity.id);
       if (order) {
         order.amount += 1;
         return;
@@ -70,13 +77,13 @@ export default {
         image: commodity.image,
         salePrice: commodity.salePrice,
         purchasePrice: commodity.purchasePrice,
-        amount: 1
+        amount: 1,
       });
       this.orderInfo.amount = this.orderList.reduce((s, n) => s + n.amount, 0);
       this.orderInfo.salePrice = this.orderList.reduce((s, n) => s + n.salePrice * n.amount, 0);
     },
     handleOrderAmountInput(id, val) {
-      let order = this.orderList.find(item => item.commodityId == id);
+      let order = this.orderList.find((item) => item.commodityId == id);
       if (order) {
         order.amount = val;
         this.orderInfo.amount = this.orderList.reduce((s, n) => s + n.amount, 0);
@@ -84,7 +91,7 @@ export default {
       }
     },
     handleOrderDeleteClick(id) {
-      let order = this.orderList.find(item => item.commodityId == id);
+      let order = this.orderList.find((item) => item.commodityId == id);
       if (order) {
         this.orderList.splice(this.orderList.indexOf(order), 1);
         this.orderInfo.amount = this.orderList.reduce((s, n) => s + n.amount, 0);
@@ -97,11 +104,11 @@ export default {
         lock: true,
         text: "正在加载",
         spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)"
+        background: "rgba(0, 0, 0, 0.7)",
       });
       fetch
         .post("api/sale/commodity/query", this.searchParameter)
-        .then(res => {
+        .then((res) => {
           this.commodityList = res.data;
         })
         .finally(() => {
@@ -110,17 +117,17 @@ export default {
     },
     // 加载种类数据
     loadCategoryOptions() {
-      fetch.get("api/sale/commodityCategory").then(res => {
+      fetch.get("api/sale/commodityCategory").then((res) => {
         this.categoryOptions = res.data;
       });
     },
     // 加载品牌数据
     loadBrandOptions() {
-      fetch.get("api/sale/commodityBrand").then(res => {
+      fetch.get("api/sale/commodityBrand").then((res) => {
         this.brandOptions = res.data;
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
@@ -153,7 +160,7 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  place-content: flex-start;
   list-style: none;
   overflow-y: scroll;
 }
@@ -168,29 +175,56 @@ export default {
   width: 200px;
   height: 200px;
 }
-.commodity-price {
-  color: red;
-  position: absolute;
-  left: 0;
-  top: 180px;
-}
 .image-slot {
   width: 100%;
   height: 100%;
 }
 .commodity-title {
   width: 100%;
-  height: 50px;
-  line-height: 25px;
   padding: 0 5px;
+  display: block;
   box-sizing: border-box;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   overflow: hidden;
 }
+.commodity-item-footer {
+  padding: 0 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.commodity-price {
+  color: #e4393c;
+}
+.commodity-amount {
+  color: blue;
+  margin-left: 20px;
+}
+.commodity-sku {
+  width: 100%;
+  padding: 0 5px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: #707070;
+}
+.commodity-sku span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.commodity-sku i {
+  margin-left: 5px;
+}
+.el-input-number {
+  width: 100px;
+}
 .order-box {
-  width: 450px;
+  width: 400px;
   display: flex;
   flex-direction: column;
   margin-left: 10px;

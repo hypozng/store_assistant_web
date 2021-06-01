@@ -1,7 +1,7 @@
 <template>
   <div class="login-page">
     <div class="login-box">
-      <h2 class="title">商店管理系统</h2>
+      <h2 class="title">得胜京东家电管理系统</h2>
       <el-input v-model="username" class="input" placeholder="账号">
         <i slot="prefix" class="el-input__icon el-icon-user"></i>
       </el-input>

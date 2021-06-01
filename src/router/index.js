@@ -49,7 +49,7 @@ router.beforeEach((to, from, next) => {
     next("/login");
     return;
   }
-  let title = "商店管理系统";
+  let title = "得胜京东家电管理系统";
   if (to.meta.title) {
     title += " - " + to.meta.title;
   }
