@@ -1,5 +1,7 @@
 <template>
   <div class="page-main">
+    <order-dialog ref="orderDialog" @success="orderCommodityList.splice(0);loadData()" />
+    <!-- 商品列表 -->
     <div class="commodity-box">
       <div class="commodity-search">
         <el-select v-model="searchParameter.params.categoryId" @change="loadData" size="mini" clearable>
@@ -12,51 +14,57 @@
         <el-button type="primary" size="mini" @click="loadData">搜索</el-button>
       </div>
       <ul class="commodity-list">
-        <li v-for="commodity in commodityList" :key="commodity.id" class="commodity-list-item" @click="handleCommodityClick(commodity)">
-          <v-attachment-image :value="commodity.image" disabled class="commodity-image" icon-style="font-size:100px" />
-          <span class="commodity-title" :title="commodity.name">{{commodity.name}}</span>
-          <span class="commodity-sku">
-            <span :title="commodity.sku">{{commodity.sku}}</span>
-            <i class="el-icon-document-copy" title="点击复制" @click.stop="$utils.copy(commodity.sku)"></i>
+        <li v-for="item in commodityList" :key="item.id" class="commodity-list-item" @click="handleCommodityClick(item)">
+          <v-attachment-image :value="item.image" disabled class="item-image" icon-style="font-size:100px" />
+          <span class="item-title" :title="item.name">{{item.name}}</span>
+          <span class="item-sku">
+            <span :title="item.sku">{{item.sku}}</span>
+            <i class="el-icon-document-copy" title="点击复制" @click.stop="$utils.copy(item.sku)"></i>
           </span>
-          <div class="commodity-item-footer">
-            <span class="commodity-price">{{$utils.render("money", commodity.salePrice)}}</span>
-            <span class="commodity-amount">{{commodity.amount || 0}}</span>
+          <div class="item-footer">
+            <span class="item-price">{{$utils.render("money", item.salePrice)}}</span>
+            <span class="item-amount">{{item.amount || 0}}</span>
           </div>
         </li>
       </ul>
     </div>
+
+    <!-- 订单商品列表 -->
     <div class="order-box">
-      <ul class="order-list">
-        <li v-for="order in orderList" :key="order.commodityId" class="order-list-item">
-          <v-attachment-image :value="order.image" disabled class="order-image" />
-          <div class="order-list-item-right">
-            <span class="order-title" :title="order.name">{{order.name}}</span>
-            <span class="order-price">{{$utils.render("money", order.salePrice)}}</span>
-            <el-input-number :value="order.amount" size="mini" :min="1" @input="handleOrderAmountInput(order.commodityId,$event)" style="margin-left:10px" />
-            <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleOrderDeleteClick(order.commodityId)" style="margin-left:10px" />
+      <ul class="order-commodity-list">
+        <li v-for="item in orderCommodityList" :key="item.id" class="order-commodity-list-item">
+          <v-attachment-image :value="item.image" disabled class="item-image" />
+          <div class="item-right">
+            <span class="item-title" :title="item.name">{{item.name}}</span>
+            <span class="item-price">{{$utils.render("money", item.salePrice)}}</span>
+            <el-input-number :value="item.amount" size="mini" :min="1" @input="handleOrderAmountInput(item.id,$event)" style="margin-left:10px" />
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleOrderDeleteClick(item.id)" style="margin-left:10px" />
           </div>
         </li>
       </ul>
       <div class="order-info">
-        <span>共{{orderInfo.amount||0}}件商品</span>
-        <span>{{$utils.render("money",orderInfo.salePrice)}}</span>
-        <el-button type="primary" size="mini" style="justify-content:flex-end">提交订单</el-button>
+        <span>共{{orderAmount||0}}件商品</span>
+        <span>{{$utils.render("money",orderPrice)}}</span>
+        <el-button type="primary" size="mini" @click="submitOrder">提交订单</el-button>
       </div>
     </div>
   </div>
 </template>
 <script>
 import fetch from "@/utils/fetch.js";
+import orderDialog from "./orderDialog";
 export default {
+  components: {
+    orderDialog
+  },
   data() {
     return {
       commodityList: [],
-      orderList: [],
+      orderCommodityList: [],
       orderInfo: {},
       categoryOptions: [],
       brandOptions: [],
-      searchParameter: { params: {} },
+      searchParameter: { params: {} }
     };
   },
   mounted() {
@@ -64,39 +72,40 @@ export default {
     this.loadCategoryOptions();
     this.loadBrandOptions();
   },
+  computed: {
+    orderAmount() {
+      return this.orderCommodityList.reduce((s, i) => s + i.amount, 0);
+    },
+    orderPrice() {
+      return this.orderCommodityList.reduce((s, i) => s + i.salePrice * i.amount, 0);
+    }
+  },
   methods: {
     handleCommodityClick(commodity) {
-      let order = this.orderList.find((item) => item.commodityId == commodity.id);
-      if (order) {
-        order.amount += 1;
+      let orderCommodity = this.orderCommodityList.find(item => item.id == commodity.id);
+      if (orderCommodity) {
+        orderCommodity.amount += 1;
         return;
       }
-      this.orderList.push({
-        commodityId: commodity.id,
-        name: commodity.name,
-        image: commodity.image,
-        salePrice: commodity.salePrice,
-        purchasePrice: commodity.purchasePrice,
-        amount: 1,
-      });
-      this.orderInfo.amount = this.orderList.reduce((s, n) => s + n.amount, 0);
-      this.orderInfo.salePrice = this.orderList.reduce((s, n) => s + n.salePrice * n.amount, 0);
+      orderCommodity = JSON.parse(JSON.stringify(commodity));
+      orderCommodity.amount = 1;
+      this.orderCommodityList.push(orderCommodity);
     },
     handleOrderAmountInput(id, val) {
-      let order = this.orderList.find((item) => item.commodityId == id);
-      if (order) {
-        order.amount = val;
-        this.orderInfo.amount = this.orderList.reduce((s, n) => s + n.amount, 0);
-        this.orderInfo.salePrice = this.orderList.reduce((s, n) => s + n.salePrice * n.amount, 0);
+      let orderCommodity = this.orderCommodityList.find(item => item.id == id);
+      if (orderCommodity) {
+        orderCommodity.amount = val;
       }
     },
     handleOrderDeleteClick(id) {
-      let order = this.orderList.find((item) => item.commodityId == id);
-      if (order) {
-        this.orderList.splice(this.orderList.indexOf(order), 1);
-        this.orderInfo.amount = this.orderList.reduce((s, n) => s + n.amount, 0);
-        this.orderInfo.salePrice = this.orderList.reduce((s, n) => s + n.salePrice * n.amount, 0);
+      let orderCommodity = this.orderCommodityList.find(item => item.id == id);
+      if (orderCommodity) {
+        this.orderCommodityList.splice(this.orderCommodityList.indexOf(orderCommodity), 1);
       }
+    },
+    // 提交订单
+    submitOrder() {
+      this.$refs.orderDialog.show(this.orderCommodityList);
     },
     // 加载数据
     loadData() {
@@ -104,11 +113,11 @@ export default {
         lock: true,
         text: "正在加载",
         spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
+        background: "rgba(0, 0, 0, 0.7)"
       });
       fetch
         .post("api/sale/commodity/query", this.searchParameter)
-        .then((res) => {
+        .then(res => {
           this.commodityList = res.data;
         })
         .finally(() => {
@@ -117,17 +126,17 @@ export default {
     },
     // 加载种类数据
     loadCategoryOptions() {
-      fetch.get("api/sale/commodityCategory").then((res) => {
+      fetch.get("api/sale/commodityCategory").then(res => {
         this.categoryOptions = res.data;
       });
     },
     // 加载品牌数据
     loadBrandOptions() {
-      fetch.get("api/sale/commodityBrand").then((res) => {
+      fetch.get("api/sale/commodityBrand").then(res => {
         this.brandOptions = res.data;
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>
@@ -139,20 +148,24 @@ export default {
   display: flex;
   flex-direction: row;
 }
+
 .commodity-box {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
+
 .commodity-search {
   padding: 5px;
   display: flex;
   flex-direction: row;
   box-shadow: 0 0 3px;
 }
+
 .commodity-search > * {
   margin-left: 10px;
 }
+
 .commodity-list {
   flex: 1;
   padding: 0;
@@ -164,22 +177,21 @@ export default {
   list-style: none;
   overflow-y: scroll;
 }
+
 .commodity-list-item {
   width: 200px;
   margin: 5px;
-  box-shadow: 0 0 3px black;
+  box-shadow: 0 0 3px;
   position: relative;
   cursor: pointer;
 }
-.commodity-image {
+
+.commodity-list-item .item-image {
   width: 200px;
   height: 200px;
 }
-.image-slot {
-  width: 100%;
-  height: 100%;
-}
-.commodity-title {
+
+.commodity-list-item .item-title {
   width: 100%;
   padding: 0 5px;
   display: block;
@@ -188,21 +200,25 @@ export default {
   white-space: nowrap;
   overflow: hidden;
 }
-.commodity-item-footer {
+
+.commodity-list-item .item-footer {
   padding: 0 5px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
 }
-.commodity-price {
+
+.commodity-list-item .item-price {
   color: #e4393c;
 }
-.commodity-amount {
+
+.commodity-list-item .item-amount {
   color: blue;
   margin-left: 20px;
 }
-.commodity-sku {
+
+.commodity-list-item .item-sku {
   width: 100%;
   padding: 0 5px;
   box-sizing: border-box;
@@ -211,18 +227,18 @@ export default {
   align-items: center;
   color: #707070;
 }
-.commodity-sku span {
+
+.commodity-list-item .item-sku span {
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.commodity-sku i {
+
+.commodity-list-item .item-sku i {
   margin-left: 5px;
 }
-.el-input-number {
-  width: 100px;
-}
+
 .order-box {
   width: 400px;
   display: flex;
@@ -230,24 +246,31 @@ export default {
   margin-left: 10px;
   box-shadow: 0 0 3px;
 }
-.order-list {
+
+.order-commodity-list {
   padding: 0;
   margin: 0;
   flex: 1;
   overflow-y: scroll;
 }
-.order-list-item {
+.order-commodity-list-item {
   box-shadow: 0 0 3px black;
   margin: 5px;
   list-style: none;
   display: flex;
   flex-direction: row;
 }
-.order-image {
+
+.order-commodity-list-item .el-input-number {
+  width: 100px;
+}
+
+.order-commodity-list-item .item-image {
   width: 80px;
   height: 80px;
 }
-.order-list-item-right {
+
+.order-commodity-list-item .item-right {
   padding: 5px;
   margin-left: 5px;
   flex: 1;
@@ -259,18 +282,18 @@ export default {
   justify-content: space-between;
   overflow: hidden;
 }
-.order-title {
+
+.order-commodity-list-item .item-title {
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.order-amount {
-  width: 60px;
-}
-.order-price {
+
+.order-commodity-list-item .item-price {
   margin-left: 10px;
 }
+
 .order-info {
   padding: 5px;
   box-shadow: 0 0 3px;

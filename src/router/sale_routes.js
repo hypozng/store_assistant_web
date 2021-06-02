@@ -25,5 +25,12 @@ export default [{
     meta: {
       title: "销售"
     }
+  },
+  {
+    path: "/sale_order",
+    component: () => import("@/views/sale/order/index.vue"),
+    meta: {
+      title: "订单管理"
+    }
   }
 ];
