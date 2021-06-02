@@ -2,7 +2,7 @@
   <el-dialog title="提交订单" :visible.sync="visible" :close-on-click-modal="false" :append-to-body="false" :modal-append-to-body="false">
     <el-form :model="formData" label-width="120px" size="medium">
       <el-row>
-        <el-col :span="12">
+        <el-col :span="12" style>
           <ul class="order-commodity-list">
             <li v-for="item in commodities" :key="item.id" class="order-commodity-list-item">
               <v-attachment-image :value="item.image" disabled class="item-image" />
@@ -16,14 +16,14 @@
           </ul>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="订单价格" prop="price">{{$utils.render("money",formData.price)}}</el-form-item>
+          <el-form-item label="订单价格" prop="salePrice">{{$utils.render("money", formData.salePrice)}}</el-form-item>
           <v-money label="成交价" prop="finalPrice" v-model="formData.finalPrice" />
-          <v-money label="支付金额" prop="paidPrice" v-model="formData.paidPrice" />
-          <el-form-item v-if="formData.paidPrice>formData.finalPrice" label="找零">
-            <span>{{$utils.render("money", formData.paidPrice - formData.finalPrice)}}</span>
+          <v-money label="支付金额" prop="paidAmount" v-model="formData.paidAmount" />
+          <el-form-item v-if="formData.paidAmount>formData.finalPrice" label="找零">
+            <span>{{$utils.render("money", formData.paidAmount - formData.finalPrice)}}</span>
           </el-form-item>
-          <el-form-item v-else-if="formData.paidPrice<formData.finalPrice" label="欠款">
-            <span style="color:red">{{$utils.render("money", formData.finalPrice - formData.paidPrice)}}</span>
+          <el-form-item v-else-if="formData.paidAmount<formData.finalPrice" label="欠款">
+            <span style="color:red">{{$utils.render("money", formData.finalPrice - formData.paidAmount)}}</span>
           </el-form-item>
           <v-textarea label="备注" prop="remark" v-model="formData.remark" />
         </el-col>
@@ -42,26 +42,29 @@ export default {
     return {
       visible: false,
       formData: {},
-
-      commodities: []
+      orderPrice: 0,
+      commodities: [],
     };
+  },
+  watch: {
+    "formData.finalPrice": function() {
+      this.formData.paidAmount = this.formData.finalPrice;
+    }
   },
   methods: {
     // 显示订单弹窗
     show(commodities) {
       if (!commodities || !commodities.length) {
-        Message.error("请先添加商品");
+        Message.info("请先添加商品");
         return;
       }
       this.commodities = commodities;
-      let price = commodities.reduce((s, i) => s + i.salePrice * i.amount, 0);
-      let amount = commodities.reduce((s, i) => s + i.amount);
+      let salePrice = commodities.reduce((s, i) => s + i.salePrice * i.amount, 0);
       this.formData = {
-        price,
-        amount,
-        finalPrice: price,
-        paidPrice: price,
-        commodities: commodities.map(item => ({ commodityId: item.id, amount: item.amount }))
+        salePrice,
+        finalPrice: salePrice,
+        paidAmount: salePrice,
+        commodities: commodities.map((item) => ({ commodityId: item.id, amount: item.amount })),
       };
       this.visible = true;
     },
@@ -69,9 +72,15 @@ export default {
       this.visible = false;
     },
     save() {
+      if (this.formData.finalPrice > this.formData.salePrice) {
+        this.$confirm("订单的成交价大于订单价格，是否继续提交？").then(() => {
+          this.$utils.save.call(this, "api/sale/order/save");
+        });
+        return;
+      }
       this.$utils.save.call(this, "api/sale/order/save");
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
@@ -79,7 +88,8 @@ export default {
   padding: 0;
   margin: 0;
   flex: 1;
-  overflow-y: scroll;
+  height: 345px;
+  overflow-y: auto;
 }
 .order-commodity-list-item {
   box-shadow: 0 0 3px black;
