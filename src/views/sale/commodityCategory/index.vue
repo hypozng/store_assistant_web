@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <el-tree :data="listData" :props="props" :expand-on-click-node="false" @node-click="handleNodeClick" />
+    <el-tree :data="listData" :props="props" :expand-on-click-node="false" @node-click="handleNodeClick" class="category-tree" />
     <div class="content">
       <el-container>
         <el-main>
@@ -109,6 +109,10 @@ export default {
 .page {
   display: flex;
   flex-direction: row;
+}
+.category-tree {
+  width: 400px;
+  overflow: auto;
 }
 .content {
   flex: 1;

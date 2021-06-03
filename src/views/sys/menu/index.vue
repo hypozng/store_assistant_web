@@ -152,6 +152,7 @@ export default {
 }
 .menu-tree {
   width: 400px;
+  overflow: auto;
 }
 .content {
   flex: 1;
