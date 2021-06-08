@@ -101,7 +101,7 @@ const utils = {
       this.title = "添加";
       this.$nextTick(() => {
         this.$refs.form && this.$refs.form.resetFields();
-        this.formData = r ? r : JSON.parse(JSON.stringify(r));
+        this.formData = r ? JSON.parse(JSON.stringify(r)) : {};
       });
     }
     this.visible = true;
