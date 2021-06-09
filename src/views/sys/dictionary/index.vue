@@ -1,17 +1,17 @@
 <template>
   <div>
-    <edit-dialog ref="editDialog" @success="loadData" />
-    <value-list-dialog ref="valueListDialog" @success="loadData" />
+    <edit-dialog ref="editDialog" @success="loadData"/>
+    <children-dialog ref="childrenDialog" @success="loadData" />
     <v-table ref="table" :url="url" :columns="columns" :search="search" :buttons="buttons" :tools="tools" />
   </div>
 </template>
 <script>
 import editDialog from "./editDialog";
-import valueListDialog from "./valueListDialog.vue";
+import childrenDialog from "./childrenDialog.vue";
 export default {
   components: {
     editDialog,
-    valueListDialog
+    childrenDialog
   },
   data() {
     return {
@@ -30,7 +30,7 @@ export default {
         { key: "name", label: "字典名称" }
       ],
       buttons: [
-        { label: "值列表", type: "primary", click: this.handleValueClick },
+        { label: "值列表", type: "primary", click: this.handleChildrenClick },
         { label: "编辑", type: "primary", click: this.handleEditClick },
         { label: "删除", type: "danger", click: this.handleDeleteClick }
       ],
@@ -47,8 +47,8 @@ export default {
     handleEditClick(r) {
       this.$refs.editDialog.show(r);
     },
-    handleValueClick(r) {
-      this.$refs.valueListDialog.show(r.groupKey);
+    handleChildrenClick(r) {
+      this.$refs.childrenDialog.show(r);
     },
     handleDeleteClick(r) {
       this.$utils.delete.call(this, "api/sys/dictionary/" + r.id);
