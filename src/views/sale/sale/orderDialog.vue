@@ -19,6 +19,7 @@
           <el-form-item label="订单价格" prop="salePrice">{{$utils.render("money", formData.salePrice)}}</el-form-item>
           <v-money label="成交价" prop="finalPrice" v-model="formData.finalPrice" />
           <v-money label="支付金额" prop="paidAmount" v-model="formData.paidAmount" />
+          <v-select label="支付方式" prop="payMethod" v-model="formData.payMethod" dictionary="pay_method" />
           <el-form-item v-if="formData.paidAmount>formData.finalPrice" label="找零">
             <span>{{$utils.render("money", formData.paidAmount - formData.finalPrice)}}</span>
           </el-form-item>
@@ -47,9 +48,9 @@ export default {
     };
   },
   watch: {
-    "formData.finalPrice": function() {
+    "formData.finalPrice": function () {
       this.formData.paidAmount = this.formData.finalPrice;
-    }
+    },
   },
   methods: {
     // 显示订单弹窗

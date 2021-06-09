@@ -1,7 +1,7 @@
 <template>
-  <el-form-item :label="label" :prop="prop" :required="required" :rules="cRules">
+  <el-form-item :label="label" :prop="prop" :required="required" :rules="rules">
     <el-select :value="value" @input="$emit('input', $event)" :style="vStyle" :placeholder="placeholder" :size="size">
-      <el-option v-for="(option, index) in cOptions" :key="index" :label="option[labelKey]" :value="option[valueKey]" />
+      <el-option v-for="(option, index) in optionsList" :key="index" :label="option[labelKey]" :value="option[valueKey]" />
     </el-select>
   </el-form-item>
 </template>
@@ -10,7 +10,7 @@ import fetch from "@/utils/fetch.js";
 export default {
   data() {
     return {
-      cRules: this.required
+      rules: this.required
         ? [
             {
               required: true,
@@ -19,43 +19,48 @@ export default {
             },
           ]
         : null,
-      cOptions: [],
+      optionsList: [],
     };
   },
   mounted() {
-    this.handleOptionsChange();
-    this.handleUrlChange();
+    this.loadData();
   },
   methods: {
     // 加载数据
     loadData() {
-      fetch.get(this.url).then((res) => {
-        this.cOptions = res.data;
-      });
-    },
-    // 选项数据更改
-    handleOptionsChange() {
+      if (this.dictionary) {
+        this.$store.dispatch("dictionary", this.dictionary).then((res) => {
+          this.optionsList = res.map((item) => ({
+            label: item.name,
+            value: item.code,
+          }));
+        });
+        return;
+      }
       if (this.url) {
+        fetch.get(this.url).then((res) => {
+          this.optionsList = res.data.map((item) => ({
+            label: item.name,
+            value: item.id,
+          }));
+        });
         return;
       }
-      this.cOptions = this.options;
-    },
-    // 数据url更改
-    handleUrlChange() {
-      if (!this.url) {
-        return;
-      }
-      this.loadData();
+      this.optionsList = this.options;
     },
   },
   watch: {
     // 监听选项值的更改
     options() {
-      this.handleOptionsChange();
+      this.loadData();
     },
     // 监听数据加载url的更改
     url() {
-      this.handleUrlChange();
+      this.loadData();
+    },
+    // 监听字典key更改
+    dictionary() {
+      this.loadData();
     },
   },
   props: {
@@ -98,13 +103,16 @@ export default {
     url: {
       type: String,
     },
+    dictionary: {
+      type: String,
+    },
     labelKey: {
       type: String,
-      default: "name",
+      default: "label",
     },
     valueKey: {
       type: String,
-      default: "id",
+      default: "value",
     },
   },
 };
