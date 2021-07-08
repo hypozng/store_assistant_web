@@ -32,5 +32,12 @@ export default [{
     meta: {
       title: "订单管理"
     }
+  },
+  {
+    path: "/warehouse_order",
+    component: () => import("@/views/sale/warehouseOrder/index.vue"),
+    meta: {
+      title: "库存管理"
+    }
   }
 ];
