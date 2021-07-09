@@ -5,12 +5,12 @@
         <el-form ref="form" :model="formData" :rules="rules" label-width="120px">
           <el-row>
             <el-col :span="24">
-              <v-input label="角色名称" prop="name" v-model="formData.name" />
+              <ff-input label="角色名称" prop="name" v-model="formData.name" />
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
-              <v-input label="角色编码" prop="code" v-model="formData.code" />
+              <ff-input label="角色编码" prop="code" v-model="formData.code" />
             </el-col>
           </el-row>
           <el-row>
@@ -25,7 +25,7 @@
           </el-row>
           <el-row>
             <el-col :span="24">
-              <v-textarea label="备注" prop="remark" v-model="formData.remark" />
+              <ff-textarea label="备注" prop="remark" v-model="formData.remark" />
             </el-col>
           </el-row>
         </el-form>

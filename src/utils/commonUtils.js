@@ -116,7 +116,6 @@ const utils = {
     let result = document.execCommand("copy");
     document.body.removeChild(textarea);
     return result;
-
   }
 };
 

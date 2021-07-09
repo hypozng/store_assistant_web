@@ -39,5 +39,12 @@ export default [{
     meta: {
       title: "库存管理"
     }
+  },
+  {
+    path: "/customer",
+    component: () => import("@/views/sale/customer/index.vue"),
+    meta: {
+      title: "客户资料管理"
+    }
   }
 ];

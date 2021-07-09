@@ -6,7 +6,7 @@
         <div class="search-input-content">
           <el-select v-if="param.type=='select'" :value="getSearchValue(param.key)" @input="handleSearchInput($event, param.key)" size="small" clearable>
             <el-option
-              v-for="option in getParamData(param, [])"
+              v-for="option in getParamData(param)"
               :key="option[param.props&&param.props.value||'id']"
               :label="option[param.props&&param.props.label||'name']"
               :value="option[param.props&&param.props.value||'id']"
@@ -143,7 +143,7 @@ export default {
       this.searchData = {};
     },
     // 获取搜索条件数据
-    getParamData(param, defaultValue) {
+    getParamData(param) {
       if (param.data) {
         return param.data;
       }
@@ -154,8 +154,12 @@ export default {
         fetch.get(param.url).then(res => {
           this.$set(this.cache, param.key, res.data);
         });
+      } else if (param.dictionaryKey) {
+        this.$store.dispatch("dictionary", param.dictionaryKey).then(res => {
+          this.$set(this.cache, param.key, res);
+        });
       }
-      return defaultValue;
+      return [];
     },
     // 加载数据
     loadData() {

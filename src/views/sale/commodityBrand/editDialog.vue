@@ -5,17 +5,17 @@
         <el-form :model="formData" label-width="120px" align="left" :rules="rules">
           <el-row>
             <el-col :span="24">
-              <v-input label="品牌名称" prop="name" required v-model="formData.name" />
+              <ff-input label="品牌名称" prop="name" required v-model="formData.name" />
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
-              <v-slider label="排序" prop="orderIndex" v-model="formData.orderIndex" />
+              <ff-slider label="排序" prop="orderIndex" v-model="formData.orderIndex" />
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
-              <v-textarea label="备注" prop="remark" v-model="formData.remark" />
+              <ff-textarea label="备注" prop="remark" v-model="formData.remark" />
             </el-col>
           </el-row>
         </el-form>

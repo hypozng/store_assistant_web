@@ -1,9 +1,9 @@
 <template>
   <el-dialog :visible.sync="visible" title="调整价格" width="500px" :close-on-click-modal="false" :append-to-body="false" :modal-append-to-body="false">
     <el-form ref="form" :model="formData" label-width="120px" size="medium">
-      <v-money label="销售价格" prop="salePrice" v-model="formData.salePrice" />
-      <v-money label="采购价格" prop="purchasePrice" v-model="formData.purchasePrice" />
-      <v-textarea label="备注" prop="remark" v-model="formData.remark" />
+      <ff-money label="销售价格" prop="salePrice" v-model="formData.salePrice" />
+      <ff-money label="采购价格" prop="purchasePrice" v-model="formData.purchasePrice" />
+      <ff-textarea label="备注" prop="remark" v-model="formData.remark" />
     </el-form>
     <span slot="footer">
       <el-button plain @click="close">关闭</el-button>

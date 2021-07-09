@@ -28,8 +28,8 @@ export default {
   methods: {
     // 加载数据
     loadData() {
-      if (this.dictionary) {
-        this.$store.dispatch("dictionary", this.dictionary).then((res) => {
+      if (this.dictionaryKey) {
+        this.$store.dispatch("dictionary", this.dictionaryKey).then((res) => {
           this.optionsList = res.map((item) => ({
             label: item.name,
             value: item.code,
@@ -59,7 +59,7 @@ export default {
       this.loadData();
     },
     // 监听字典key更改
-    dictionary() {
+    dictionaryKey() {
       this.loadData();
     },
   },
@@ -103,7 +103,7 @@ export default {
     url: {
       type: String,
     },
-    dictionary: {
+    dictionaryKey: {
       type: String,
     },
     labelKey: {

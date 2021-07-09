@@ -7,17 +7,17 @@
           <el-main>
             <el-row>
               <el-col :span="24">
-                <v-input label="菜单名称" prop="name" v-model="formData.name" />
+                <ff-input label="菜单名称" prop="name" v-model="formData.name" />
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
-                <v-input label="菜单地址" prop="url" v-model="formData.url" />
+                <ff-input label="菜单地址" prop="url" v-model="formData.url" />
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="16">
-                <v-input label="菜单参数" prop="params" v-model="formData.params" />
+                <ff-input label="菜单参数" prop="params" v-model="formData.params" />
               </el-col>
               <el-col :span="8">
                 <el-form-item prop="disabled" label="禁用">
@@ -30,12 +30,12 @@
             </el-row>
             <el-row>
               <el-col :span="24">
-                <v-slider label="排序" prop="orderIndex" v-model="formData.orderIndex" />
+                <ff-slider label="排序" prop="orderIndex" v-model="formData.orderIndex" />
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
-                <v-textarea label="备注" prop="remark" v-model="formData.remark" />
+                <ff-textarea label="备注" prop="remark" v-model="formData.remark" />
               </el-col>
             </el-row>
             <el-row v-if="mode=='edit'">

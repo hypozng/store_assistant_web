@@ -1,24 +1,10 @@
 <template>
-  <el-form-item :label="label" :prop="prop" :required="required" :rules="rules">
-    <v-attachment-image
-      :value="value"
-      @input="$emit('input', $event)"
-      :style="vStyle"
-      :disabled="disabled"
-      :placeholder="placeholder"
-      :size="size"
-      :type="type"
-      class="ff-image"
-      style="background-color: transparent"
-    />
+  <el-form-item :label="label" :prop="prop" :rules="rules">
+    <el-date-picker :value="value" @input="$emit('input', $event)" :style="vStyle" :disabled="disabled" :placeholder="placeholder" :size="size" :type="type" />
   </el-form-item>
 </template>
 <script>
-import vAttachmentImage from "../ui/attachmentImage";
 export default {
-  components: {
-    vAttachmentImage
-  },
   data() {
     return {
       rules: this.required
@@ -31,11 +17,6 @@ export default {
           ]
         : null
     };
-  },
-  methods: {
-    handleSuccess(res) {
-      console.log("success", res);
-    }
   },
   props: {
     label: {
@@ -54,7 +35,8 @@ export default {
       default: null
     },
     vStyle: {
-      type: String
+      type: String,
+      default: "width:100%"
     },
     disabled: {
       type: Boolean,
@@ -68,17 +50,9 @@ export default {
       type: String
     },
     type: {
-      type: String
+      type: String,
+      default: "date"
     }
   }
 };
 </script>
-<style>
-.ff-image {
-  width: 200px;
-  height: 200px;
-  border: 1px solid #e0e0e0;
-  border-radius: 5px;
-  overflow: hidden;
-}
-</style>

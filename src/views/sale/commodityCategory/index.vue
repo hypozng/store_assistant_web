@@ -7,17 +7,17 @@
           <el-form v-if="formData" ref="form" :model="formData" size="medium" label-width="120px" align="left">
             <el-row>
               <el-col :span="24">
-                <v-input label="种类名称" prop="name" v-model="formData.name" />
+                <ff-input label="种类名称" prop="name" v-model="formData.name" />
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
-                <v-input label="序号" prop="orderIndex" v-model="formData.orderIndex" />
+                <ff-slider label="序号" prop="orderIndex" v-model="formData.orderIndex" />
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
-                <v-textarea label="备注" prop="remark" v-model="formData.remark" />
+                <ff-textarea label="备注" prop="remark" v-model="formData.remark" />
               </el-col>
             </el-row>
             <el-row v-if="mode=='edit'">

@@ -17,16 +17,17 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="订单价格" prop="salePrice">{{$utils.render("money", formData.salePrice)}}</el-form-item>
-          <v-money label="成交价" prop="finalPrice" v-model="formData.finalPrice" />
-          <v-money label="支付金额" prop="paidAmount" v-model="formData.paidAmount" />
-          <v-select label="支付方式" prop="payMethod" v-model="formData.payMethod" dictionary="pay_method" />
+          <ff-money label="成交价" prop="finalPrice" v-model="formData.finalPrice" />
+          <ff-money label="支付金额" prop="paidAmount" v-model="formData.paidAmount" />
+          <ff-select label="支付方式" prop="payMethod" v-model="formData.payMethod" dictionaryKey="pay_method" />
+          <ff-customer label="客户" prop="customerId" v-model="formData.customerId" />
           <el-form-item v-if="formData.paidAmount>formData.finalPrice" label="找零">
             <span>{{$utils.render("money", formData.paidAmount - formData.finalPrice)}}</span>
           </el-form-item>
           <el-form-item v-else-if="formData.paidAmount<formData.finalPrice" label="欠款">
             <span style="color:red">{{$utils.render("money", formData.finalPrice - formData.paidAmount)}}</span>
           </el-form-item>
-          <v-textarea label="备注" prop="remark" v-model="formData.remark" />
+          <ff-textarea label="备注" prop="remark" v-model="formData.remark" />
         </el-col>
       </el-row>
     </el-form>
@@ -44,13 +45,13 @@ export default {
       visible: false,
       formData: {},
       orderPrice: 0,
-      commodities: [],
+      commodities: []
     };
   },
   watch: {
-    "formData.finalPrice": function () {
+    "formData.finalPrice": function() {
       this.formData.paidAmount = this.formData.finalPrice;
-    },
+    }
   },
   methods: {
     // 显示订单弹窗
@@ -65,7 +66,7 @@ export default {
         salePrice,
         finalPrice: salePrice,
         paidAmount: salePrice,
-        commodities: commodities.map((item) => ({ commodityId: item.id, amount: item.amount })),
+        commodities: commodities.map(item => ({ commodityId: item.id, amount: item.amount }))
       };
       this.visible = true;
     },
@@ -80,8 +81,8 @@ export default {
         return;
       }
       this.$utils.save.call(this, "api/sale/order/save");
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>

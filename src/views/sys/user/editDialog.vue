@@ -5,35 +5,33 @@
         <el-form ref="form" :model="formData" :rules="rules" label-width="120px">
           <el-row>
             <el-col :span="12">
-              <v-input label="姓名" prop="name" v-model="formData.name" />
+              <ff-input label="姓名" prop="name" v-model="formData.name" />
             </el-col>
             <el-col :span="12">
-              <v-input label="用户名" prop="user" v-model="formData.user" />
+              <ff-input label="用户名" prop="user" v-model="formData.user" />
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
-              <v-input label="电话" prop="phone" v-model="formData.phone" />
+              <ff-input label="电话" prop="phone" v-model="formData.phone" />
             </el-col>
             <el-col :span="12">
-              <v-input label="昵称" prop="nickname" v-model="formData.nickname" />
+              <ff-input label="昵称" prop="nickname" v-model="formData.nickname" />
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
-              <el-form-item label="生日" prop="birthday">
-                <el-date-picker v-model="formData.birthday" />
-              </el-form-item>
+              <ff-date-picker label="生日" prop="birthday" v-model="formData.birthday" />
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
-              <v-input label="地址" prop="address" v-model="formData.address" />
+              <ff-input label="地址" prop="address" v-model="formData.address" />
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
-              <v-input label="签名" prop="signature" v-model="formData.signature" />
+              <ff-input label="签名" prop="signature" v-model="formData.signature" />
             </el-col>
           </el-row>
         </el-form>

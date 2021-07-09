@@ -5,39 +5,39 @@
       <el-form ref="form" :model="formData" size="medium" label-width="120px" align="left">
         <el-row>
           <el-col :span="12">
-            <v-input v-model="formData.name" label="名称" prop="name" />
-            <v-select label="种类" prop="categoryId" v-model="formData.categoryId" url="api/sale/commodityCategory" />
-            <v-select label="品牌" prop="brandId" v-model="formData.brandId" url="api/sale/commodityBrand" />
-            <v-input v-model="formData.model" label="型号" prop="model" />
+            <ff-input label="名称" prop="name" v-model="formData.name" />
+            <ff-select label="种类" prop="categoryId" v-model="formData.categoryId" url="api/sale/commodityCategory" />
+            <ff-select label="品牌" prop="brandId" v-model="formData.brandId" url="api/sale/commodityBrand" />
+            <ff-input v-model="formData.model" label="型号" prop="model" />
           </el-col>
           <el-col :span="12">
-            <f-image v-model="formData.image" label="图片" prop="image" />
+            <ff-image label="图片" prop="image" v-model="formData.image" />
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <v-input v-model="formData.code" label="货号" prop="code" />
+            <ff-input label="货号" prop="code" v-model="formData.code" />
           </el-col>
           <el-col :span="12">
-            <v-input v-model="formData.sku" label="SKU" prop="code" />
+            <ff-input label="SKU" prop="code" v-model="formData.sku" />
           </el-col>
         </el-row>
         <el-row @click.native="handlePriceClick">
           <el-col :span="12">
-            <v-money label="销售价格" prop="salePrice" v-model="formData.salePrice" :disabled="mode!='add'" />
+            <ff-money label="销售价格" prop="salePrice" v-model="formData.salePrice" :disabled="mode!='add'" />
           </el-col>
           <el-col :span="12">
-            <v-money label="采购价格" prop="purchasePrice" v-model="formData.purchasePrice" :disabled="mode!='add'" />
+            <ff-money label="采购价格" prop="purchasePrice" v-model="formData.purchasePrice" :disabled="mode!='add'" />
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
-            <v-textarea label="详细信息" prop="detail" v-model="formData.detail" />
+            <ff-textarea label="详细信息" prop="detail" v-model="formData.detail" />
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
-            <v-textarea label="备注" prop="remark" v-model="formData.remark" />
+            <ff-textarea label="备注" prop="remark" v-model="formData.remark" />
           </el-col>
         </el-row>
       </el-form>
