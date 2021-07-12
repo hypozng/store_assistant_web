@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="visible" :title="title+'客户资料'" :close-on-click-modal="false" :append-to-body="false" :modal-append-to-body="false">
+  <el-dialog :visible.sync="visible" :title="title+'客户资料'" :close-on-click-modal="false" :append-to-body="appendToBody">
     <el-form ref="form" :model="formData" label-width="120px" size="medium" align="left">
       <el-row>
         <el-col :span="12">
@@ -40,7 +40,7 @@ export default {
     return {
       visible: false,
       title: "编辑",
-      formData: {}
+      formData: {},
     };
   },
   methods: {
@@ -52,7 +52,13 @@ export default {
     },
     save() {
       this.$utils.save.call(this, "api/sale/customer/save");
-    }
-  }
+    },
+  },
+  props: {
+    appendToBody: {
+      type: Boolean,
+      default: false,
+    },
+  },
 };
 </script>

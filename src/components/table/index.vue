@@ -33,16 +33,7 @@
       >{{ tool.label }}</el-button>
     </div>
     <div class="content item">
-      <el-table
-        :data="tableData"
-        class="table"
-        style="width: 100%"
-        header-row-class-name="table-header-row"
-        cell-class-name="table-cell"
-        border
-        stripe
-        size="small"
-      >
+      <el-table :data="tableData" class="table" style="width: 100%" header-row-class-name="table-header-row" cell-class-name="table-cell" border stripe size="small">
         <el-table-column type="index" align="center" />
         <el-table-column
           v-for="column in columns"
@@ -54,7 +45,10 @@
           :sortable="column.sortable"
           :align="column.align"
         >
-          <template slot-scope="scope">{{ logic.getCellRender(scope.row[column.key], scope.row, column) }}</template>
+          <template slot-scope="scope">
+            <v-dictionary v-if="column.dictionaryKey" :dictionaryKey="column.dictionaryKey" :value="scope.row[column.key]" />
+            <span v-else>{{ logic.getCellRender(scope.row[column.key], scope.row, column) }}</span>
+          </template>
         </el-table-column>
         <el-table-column v-if="buttons && buttons.length" fixed="right" label="操作" align="center" :width="operationColumnWidth">
           <template slot-scope="scope">
@@ -72,16 +66,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination
-      :page-sizes="paginationSizes"
-      :layout="paginationLayout"
-      :total="total"
-      :pager-count="9"
-      background
-      class="item"
-      @size-change="handleSizeChange"
-      @current-change="handlePageChange"
-    />
+    <el-pagination :page-sizes="paginationSizes" :layout="paginationLayout" :total="total" :pager-count="9" background class="item" @size-change="handleSizeChange" @current-change="handlePageChange" />
   </div>
 </template>
 <script>
@@ -102,8 +87,8 @@ export default {
         page: 1,
         size: 10,
         sort: this.sort,
-        dir: this.dir
-      }
+        dir: this.dir,
+      },
     };
   },
   mounted() {
@@ -142,6 +127,13 @@ export default {
     resetSearch() {
       this.searchData = {};
     },
+    getDictionaryValue(dic, val) {
+      if (!dic || !val) {
+        return "";
+      }
+      let item = dic.find((item) => item.code == val);
+      return (item && item.name) || val;
+    },
     // 获取搜索条件数据
     getParamData(param) {
       if (param.data) {
@@ -151,11 +143,11 @@ export default {
         return this.cache[param.key];
       }
       if (param.url) {
-        fetch.get(param.url).then(res => {
+        fetch.get(param.url).then((res) => {
           this.$set(this.cache, param.key, res.data);
         });
       } else if (param.dictionaryKey) {
-        this.$store.dispatch("dictionary", param.dictionaryKey).then(res => {
+        this.$store.dispatch("dictionary", param.dictionaryKey).then((res) => {
           this.$set(this.cache, param.key, res);
         });
       }
@@ -167,22 +159,22 @@ export default {
         lock: true,
         text: "正在加载",
         spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)"
+        background: "rgba(0, 0, 0, 0.7)",
       });
       this.searchParameter.params = {
         ...this.params,
-        ...this.searchData
+        ...this.searchData,
       };
       fetch
         .post(this.url, this.searchParameter)
-        .then(res => {
+        .then((res) => {
           this.tableData = res.data.content;
           this.total = res.data.total;
         })
         .finally(() => {
           loading.close();
         });
-    }
+    },
   },
   watch: {
     sort(val) {
@@ -190,63 +182,63 @@ export default {
     },
     dir(val) {
       this.searchParameter.dir = val;
-    }
+    },
   },
   props: {
     // URL
     url: {
       type: String,
-      require: true
+      require: true,
     },
     // 自动加载数据
     autoLoad: {
       type: Boolean,
-      default: true
+      default: true,
     },
     // 查询条件
     search: {
       type: Array,
       default() {
         return [];
-      }
+      },
     },
     // 表格的列
     columns: {
       type: Array,
       default() {
         return [];
-      }
+      },
     },
     // 工具栏按钮
     tools: {
       type: Array,
       default() {
         return [];
-      }
+      },
     },
     // 操作列按钮
     buttons: {
       type: Array,
       default() {
         return [];
-      }
+      },
     },
     // 操作列宽度
     operationColumnWidth: {
       type: [String, Number],
-      default: 250
+      default: 250,
     },
     // 排序列
     sort: {
       type: String,
-      default: "id"
+      default: "id",
     },
     // 排序方向
     dir: {
       type: String,
-      default: "asc"
-    }
-  }
+      default: "asc",
+    },
+  },
 };
 </script>
 <style>

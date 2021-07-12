@@ -6,7 +6,7 @@
           <el-button slot="append" icon="el-icon-search" @click="loadCommodities"></el-button>
         </el-input>
       </div>
-      <div class="commodity-list-box" v-loading="commoditiesLoading">
+      <div class="commodity-list-box">
         <ul class="commodity-list">
           <li v-for="commodity in commodities" :key="commodity.id" class="commodity-list-item" @click="handleCommodityItemClick(commodity)">
             <v-attachment-image :value="commodity.image" disabled class="item-image" />
@@ -78,7 +78,6 @@ export default {
       keyword: "",
       commodities: [],
       commodity: null,
-      commoditiesLoading: false,
       amount: 0,
       remark: "",
     };
@@ -113,7 +112,12 @@ export default {
     },
     // 加载商品信息
     loadCommodities() {
-      this.commoditiesLoading = true;
+      let loading = this.$loading({
+        lock: true,
+        text: "正在加载",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
       let commodityId = this.commodity && this.commodity.id;
       let params = {
         params: {
@@ -129,7 +133,7 @@ export default {
           }
         })
         .finally(() => {
-          this.commoditiesLoading = false;
+          loading.close();
         });
     },
     // 入库

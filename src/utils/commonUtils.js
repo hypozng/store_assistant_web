@@ -18,7 +18,7 @@ const utils = {
   // 渲染
   render(method, val) {
     let fn = render[method];
-    return fn ? fn(val) : val;
+    return fn ? fn.call(this, val) : val;
   },
 
   // 将list转换成tree

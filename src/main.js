@@ -11,6 +11,8 @@ import commonUtils from "@/utils/commonUtils.js";
 import vTable from "@/components/table/index.vue";
 import vImage from "@/components/ui/image.vue";
 import vAttachmentImage from "@/components/ui/attachmentImage.vue";
+import vPromise from "@/components/ui/promise.vue";
+import vDictionary from "@/components/ui/dictionary.vue"
 import ffInput from "@/components/form/input.vue";
 import ffSlider from "@/components/form/slider.vue";
 import ffTextarea from "@/components/form/textarea.vue";
@@ -28,6 +30,8 @@ Vue.use(ElementUI);
 Vue.component("vTable", vTable);
 Vue.component("vImage", vImage);
 Vue.component("vAttachmentImage", vAttachmentImage);
+Vue.component("vPromise", vPromise);
+Vue.component("vDictionary", vDictionary);
 Vue.component("ffInput", ffInput);
 Vue.component("ffTextarea", ffTextarea);
 Vue.component("ffInputNumber", ffInputNumber);

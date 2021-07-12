@@ -34,6 +34,15 @@
         </template>
       </p>
       <p style="text-align:right">{{$utils.render("time", formData.createTime)}}</p>
+      <el-divider content-position="center">客户信息</el-divider>
+      <template v-if="formData.customer">
+        <p>姓名：{{formData.customer.name}}</p>
+        <p>电话：{{formData.customer.phone}}</p>
+        <p>地址：{{formData.customer.address}}</p>
+      </template>
+      <template v-else>
+        <p>匿名购买</p>
+      </template>
       <el-divider content-position="center">备注</el-divider>
       <span>{{formData.remark || "无"}}</span>
     </div>
