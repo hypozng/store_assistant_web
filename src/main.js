@@ -13,6 +13,7 @@ import vImage from "@/components/ui/image.vue";
 import vAttachmentImage from "@/components/ui/attachmentImage.vue";
 import vPromise from "@/components/ui/promise.vue";
 import vDictionary from "@/components/ui/dictionary.vue"
+import ffItem from "@/components/form/item.vue";
 import ffInput from "@/components/form/input.vue";
 import ffSlider from "@/components/form/slider.vue";
 import ffTextarea from "@/components/form/textarea.vue";
@@ -32,6 +33,7 @@ Vue.component("vImage", vImage);
 Vue.component("vAttachmentImage", vAttachmentImage);
 Vue.component("vPromise", vPromise);
 Vue.component("vDictionary", vDictionary);
+Vue.component("ffItem", ffItem);
 Vue.component("ffInput", ffInput);
 Vue.component("ffTextarea", ffTextarea);
 Vue.component("ffInputNumber", ffInputNumber);

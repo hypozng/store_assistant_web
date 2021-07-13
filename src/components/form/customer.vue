@@ -10,7 +10,13 @@
           </el-input>
         </div>
         <ul class="customer-list">
-          <li v-for="item in dataList" :key="item.id" class="customer-list-item" :class="{selected:selectedCustomer&&item.id==selectedCustomer.id}" @click="select(item)">
+          <li
+            v-for="item in dataList"
+            :key="item.id"
+            class="customer-list-item"
+            :class="{selected:selectedCustomer&&item.id==selectedCustomer.id}"
+            @click="select(item)"
+          >
             <div v-if="selectedCustomer&&selectedCustomer.id==item.id" class="customer-info-box">
               <div class="customer-info-head">
                 <v-attachment-image :value="item.photo" disabled style="width:80px;height:80px" />
@@ -53,9 +59,9 @@
         <el-button type="primary" size="medium" @click="submit">确定</el-button>
       </span>
     </el-dialog>
-    <el-form-item :label="label" :prop="prop" :rules="rules">
+    <ff-item :label="label" :prop="prop" :required="required">
       <el-input :value="customer&&customer.name" :placeholder="placeholder" @click.native="openDialog" @focus="openDialog" />
-    </el-form-item>
+    </ff-item>
   </div>
 </template>
 <script>
@@ -64,33 +70,24 @@ import { Message } from "element-ui";
 import customerDialog from "@/views/sale/customer/editDialog";
 export default {
   components: {
-    customerDialog,
+    customerDialog
   },
   data() {
     return {
-      rules: this.required
-        ? [
-            {
-              required: true,
-              message: "请输入" + this.label,
-              trigger: ["blur", "change"],
-            },
-          ]
-        : null,
       customer: null,
       selectedCustomer: null,
       visible: false,
       searchInputTimer: null,
       searchParameter: {
         params: {
-          keyword: "",
+          keyword: ""
         },
         page: 1,
         size: 100,
         sort: "id",
-        dir: "asc",
+        dir: "asc"
       },
-      dataList: [],
+      dataList: []
     };
   },
   mounted() {
@@ -156,14 +153,14 @@ export default {
     },
     // 加载客户列表数据
     loadData() {
-      fetch.post("api/sale/customer/page", this.searchParameter).then((res) => {
+      fetch.post("api/sale/customer/page", this.searchParameter).then(res => {
         this.dataList = res.data.content;
         if (!this.dataList.length) {
           this.selectedCustomer = null;
         } else if (!this.value) {
           this.selectedCustomer = this.dataList[0];
         } else {
-          this.selectedCustomer = this.dataList.find((item) => item.id == this.value);
+          this.selectedCustomer = this.dataList.find(item => item.id == this.value);
         }
       });
     },
@@ -173,47 +170,47 @@ export default {
       if (!id) {
         return;
       }
-      fetch.get("api/sale/customer/" + id).then((res) => {
+      fetch.get("api/sale/customer/" + id).then(res => {
         this.customer = res.data;
       });
-    },
+    }
   },
   watch: {
     value() {
       this.loadCustomer();
-    },
+    }
   },
   props: {
     label: {
       type: String,
-      default: "",
+      default: ""
     },
     prop: {
       type: String,
-      default: "",
+      default: ""
     },
     required: {
       type: Boolean,
-      default: false,
+      default: false
     },
     value: {
-      default: null,
+      default: null
     },
     vStyle: {
       type: String,
-      default: "width:100%",
+      default: "width:100%"
     },
     disabled: {
       type: Boolean,
-      default: false,
+      default: false
     },
     placeholder: {
       type: String,
       default() {
         return "请选择" + this.label;
-      },
-    },
-  },
+      }
+    }
+  }
 };
 </script>
 <style scoped>

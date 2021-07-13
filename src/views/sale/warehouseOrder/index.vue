@@ -2,7 +2,7 @@
   <div class="page">
     <div class="page-left">
       <div class="search-box">
-        <el-input v-model="keyword" @keypress.enter.native="loadCommodities">
+        <el-input v-model="searchParameter.params.keyword" @input="handleSearchInput" @keypress.enter.native="loadCommodities" clearable>
           <el-button slot="append" icon="el-icon-search" @click="loadCommodities"></el-button>
         </el-input>
       </div>
@@ -54,7 +54,7 @@ export default {
         { key: "type", label: "类型", width: "100", align: "center", render: this.orderTypeRender },
         { key: "amount", label: "数量", width: "100", align: "center" },
         { key: "revoked", label: "是否撤销", width: "100", align: "center", render: this.revokedRender },
-        { key: "remark", label: "备注", minWidth: "200" },
+        { key: "remark", label: "备注", minWidth: "200" }
       ],
       search: [
         {
@@ -63,29 +63,51 @@ export default {
           type: "select",
           data: [
             { id: 1, name: "入库" },
-            { id: 2, name: "出库" },
-          ],
-        },
+            { id: 2, name: "出库" }
+          ]
+        }
       ],
       buttons: [
         {
           label: "撤销",
           click: this.revoke,
           type: "danger",
-          hidden: (r) => r.revoked == 1,
-        },
+          hidden: r => r.revoked == 1
+        }
       ],
-      keyword: "",
+      searchParameter: {
+        params: {
+          keyword: ""
+        },
+        page: 1,
+        size: 1000,
+        sort: "id",
+        dir: "asc"
+      },
+      searchInputTimer: null,
       commodities: [],
       commodity: null,
       amount: 0,
-      remark: "",
+      remark: ""
     };
   },
   mounted() {
     this.loadCommodities();
   },
+  destroyed() {
+    if (this.searchInputTimer) {
+      clearTimeout(this.searchInputTimer);
+    }
+  },
   methods: {
+    handleSearchInput() {
+      if (this.searchInputTimer) {
+        clearTimeout(this.searchInputTimer);
+      }
+      this.searchInputTimer = setTimeout(() => {
+        this.loadCommodities();
+      }, 500);
+    },
     handleCommodityItemClick(r) {
       this.amount = 1;
       this.remark = "";
@@ -112,29 +134,16 @@ export default {
     },
     // 加载商品信息
     loadCommodities() {
-      let loading = this.$loading({
-        lock: true,
-        text: "正在加载",
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
-      });
       let commodityId = this.commodity && this.commodity.id;
-      let params = {
-        params: {
-          keyword: this.keyword,
-        },
-      };
-      return fetch
-        .post("api/sale/commodity/query", params)
-        .then((res) => {
-          this.commodities = res.data;
+      return this.$utils.showLoading.call(
+        this,
+        fetch.post("api/sale/commodity/page", this.searchParameter).then(res => {
+          this.commodities = res.data.content;
           if (commodityId) {
-            this.commodity = this.commodities.find((item) => item.id == commodityId);
+            this.commodity = this.commodities.find(item => item.id == commodityId);
           }
         })
-        .finally(() => {
-          loading.close();
-        });
+      );
     },
     // 入库
     put() {
@@ -150,7 +159,7 @@ export default {
         commodityId: this.commodity.id,
         amount: this.amount,
         type: 1,
-        remark: this.remark,
+        remark: this.remark
       };
       fetch.post("api/sale/warehouseOrder/save", formData).then(() => {
         this.loadData();
@@ -168,8 +177,8 @@ export default {
           });
         })
         .catch(() => {});
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>

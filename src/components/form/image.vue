@@ -1,5 +1,5 @@
 <template>
-  <el-form-item :label="label" :prop="prop" :required="required" :rules="rules">
+  <ff-item :label="label" :prop="prop" :required="required">
     <v-attachment-image
       :value="value"
       @input="$emit('input', $event)"
@@ -11,7 +11,7 @@
       class="ff-image"
       style="background-color: transparent"
     />
-  </el-form-item>
+  </ff-item>
 </template>
 <script>
 import vAttachmentImage from "../ui/attachmentImage";
@@ -20,17 +20,7 @@ export default {
     vAttachmentImage
   },
   data() {
-    return {
-      rules: this.required
-        ? [
-            {
-              required: true,
-              message: "请输入" + this.label,
-              trigger: ["blur", "change"]
-            }
-          ]
-        : null
-    };
+    return {};
   },
   methods: {
     handleSuccess(res) {

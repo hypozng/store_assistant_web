@@ -1,20 +1,28 @@
 <template>
   <div class="page-main">
-    <order-dialog ref="orderDialog" @success="orderCommodityList.splice(0);loadData()" />
+    <order-dialog ref="orderDialog" @success="onOrderSuccess" />
     <!-- 商品列表 -->
     <div class="commodity-box">
       <div class="commodity-search">
-        <el-select v-model="searchParameter.params.categoryId" @change="loadData" size="mini" clearable>
-          <el-option v-for="category in categoryOptions" :key="category.id" :label="category.name" :value="category.id" />
-        </el-select>
         <el-select v-model="searchParameter.params.brandId" @change="loadData" size="mini" clearable>
-          <el-option v-for="brand in brandOptions" :key="brand.id" :label="brand.name" :value="brand.id" />
+          <v-promise url="api/sale/commodityBrand">
+            <template slot-scope="scope">
+              <el-option v-for="item in scope.data" :key="item.id" :label="item.name" :value="item.id" />
+            </template>
+          </v-promise>
         </el-select>
-        <el-input v-model="searchParameter.params.keyword" size="mini" clearable />
+        <el-select v-model="searchParameter.params.categoryId" @change="loadData" size="mini" clearable>
+          <v-promise url="api/sale/commodityCategory">
+            <template slot-scope="scope">
+              <el-option v-for="item in scope.data" :key="item.id" :label="item.name" :value="item.id" />
+            </template>
+          </v-promise>
+        </el-select>
+        <el-input v-model="searchParameter.params.keyword" @keypress.enter.native="loadData" size="mini" clearable />
         <el-button type="primary" size="mini" @click="loadData">搜索</el-button>
       </div>
       <ul class="commodity-list">
-        <li v-for="item in commodityList" :key="item.id" class="commodity-list-item" @click="handleCommodityClick(item)">
+        <li v-for="item in dataList" :key="item.id" class="commodity-list-item" @click="handleItemClick(item)">
           <v-attachment-image :value="item.image" disabled class="item-image" icon-style="font-size:100px" />
           <span class="item-title" :title="item.name">{{item.name}}</span>
           <span class="item-sku">
@@ -32,7 +40,7 @@
     <!-- 订单商品列表 -->
     <div class="order-box">
       <ul class="order-commodity-list">
-        <li v-for="item in orderCommodityList" :key="item.id" class="order-commodity-list-item">
+        <li v-for="item in orderList" :key="item.id" class="order-commodity-list-item">
           <v-attachment-image :value="item.image" disabled class="item-image" />
           <div class="item-right">
             <span class="item-title" :title="item.name">{{item.name}}</span>
@@ -59,82 +67,70 @@ export default {
   },
   data() {
     return {
-      commodityList: [],
-      orderCommodityList: [],
+      dataList: [],
+      orderList: [],
       orderInfo: {},
-      categoryOptions: [],
-      brandOptions: [],
-      searchParameter: { params: {} }
+      searchParameter: {
+        params: {
+          keyword: ""
+        },
+        page: 1,
+        size: 1000,
+        sort: "id",
+        dir: "asc"
+      }
     };
   },
   mounted() {
     this.loadData();
-    this.loadCategoryOptions();
-    this.loadBrandOptions();
   },
   computed: {
     orderAmount() {
-      return this.orderCommodityList.reduce((s, i) => s + i.amount, 0);
+      return this.orderList.reduce((s, i) => s + i.amount, 0);
     },
     orderPrice() {
-      return this.orderCommodityList.reduce((s, i) => s + i.salePrice * i.amount, 0);
+      return this.orderList.reduce((s, i) => s + i.salePrice * i.amount, 0);
     }
   },
   methods: {
-    handleCommodityClick(commodity) {
-      let orderCommodity = this.orderCommodityList.find(item => item.id == commodity.id);
+    handleItemClick(commodity) {
+      let orderCommodity = this.orderList.find(item => item.id == commodity.id);
       if (orderCommodity) {
         orderCommodity.amount += 1;
         return;
       }
       orderCommodity = JSON.parse(JSON.stringify(commodity));
       orderCommodity.amount = 1;
-      this.orderCommodityList.push(orderCommodity);
+      this.orderList.push(orderCommodity);
     },
     handleOrderAmountInput(id, val) {
-      let orderCommodity = this.orderCommodityList.find(item => item.id == id);
+      let orderCommodity = this.orderList.find(item => item.id == id);
       if (orderCommodity) {
         orderCommodity.amount = val;
       }
     },
     handleOrderDeleteClick(id) {
-      let orderCommodity = this.orderCommodityList.find(item => item.id == id);
+      let orderCommodity = this.orderList.find(item => item.id == id);
       if (orderCommodity) {
-        this.orderCommodityList.splice(this.orderCommodityList.indexOf(orderCommodity), 1);
+        this.orderList.splice(this.orderList.indexOf(orderCommodity), 1);
       }
     },
     // 提交订单
     submitOrder() {
-      this.$refs.orderDialog.show(this.orderCommodityList);
+      this.$refs.orderDialog.show(this.orderList);
     },
     // 加载数据
     loadData() {
-      let loading = this.$loading({
-        lock: true,
-        text: "正在加载",
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)"
-      });
-      fetch
-        .post("api/sale/commodity/query", this.searchParameter)
-        .then(res => {
-          this.commodityList = res.data;
+      this.$utils.showLoading.call(
+        this,
+        fetch.post("api/sale/commodity/page", this.searchParameter).then(res => {
+          this.dataList = res.data.content;
         })
-        .finally(() => {
-          loading.close();
-        });
+      );
     },
-    // 加载种类数据
-    loadCategoryOptions() {
-      fetch.get("api/sale/commodityCategory").then(res => {
-        this.categoryOptions = res.data;
-      });
-    },
-    // 加载品牌数据
-    loadBrandOptions() {
-      fetch.get("api/sale/commodityBrand").then(res => {
-        this.brandOptions = res.data;
-      });
+    onOrderSuccess() {
+      this.orderList.splice(0);
+      this.loadData();
     }
   }
 };

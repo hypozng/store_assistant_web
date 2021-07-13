@@ -1,22 +1,12 @@
 <template>
-  <el-form-item :label="label" :prop="prop" :rules="rules">
+  <ff-item :label="label" :prop="prop">
     <el-date-picker :value="value" @input="$emit('input', $event)" :style="vStyle" :disabled="disabled" :placeholder="placeholder" :size="size" :type="type" />
-  </el-form-item>
+  </ff-item>
 </template>
 <script>
 export default {
   data() {
-    return {
-      rules: this.required
-        ? [
-            {
-              required: true,
-              message: "请输入" + this.label,
-              trigger: ["blur", "change"]
-            }
-          ]
-        : null
-    };
+    return {};
   },
   props: {
     label: {

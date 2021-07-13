@@ -116,6 +116,22 @@ const utils = {
     let result = document.execCommand("copy");
     document.body.removeChild(textarea);
     return result;
+  },
+
+  // 显示加载进度
+  showLoading(promise) {
+    if (!promise) {
+      return;
+    }
+    let loading = this.$loading({
+      lock: true,
+      text: "正在加载",
+      spinner: "el-icon-loading",
+      background: "rgba(0, 0, 0, 0.7)"
+    });
+    return promise.finally(function () {
+      loading.close();
+    });
   }
 };
 
