@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <el-tree :data="listData" :props="props" @node-click="handleNodeClick" class="category-tree" size="medium" />
+    <el-tree :data="listData" :props="props" :default-expanded-keys="defaultExpandedKeys" node-key="id" @node-click="handleNodeClick" class="category-tree" size="medium" />
     <div class="content">
       <el-container>
         <el-main>
@@ -46,7 +46,8 @@ export default {
       mode: "add",
       props: {
         label: "name"
-      }
+      },
+      defaultExpandedKeys: []
     };
   },
   mounted() {
@@ -65,13 +66,12 @@ export default {
         this.switchToAdd();
         return;
       }
-      r = JSON.parse(JSON.stringify(r));
-      delete r.children;
-      this.formData = r;
+      this.formData = Object.fromEntries(Object.entries(r).filter(item => item[0] != "children"));
       this.mode = "edit";
     },
     // 树节点click事件
     handleNodeClick(r) {
+      this.defaultExpandedKeys[0] = r.id;
       this.switchToEdit(r);
     },
     // 添加同级按钮click事件
@@ -90,7 +90,10 @@ export default {
     loadData() {
       fetch.get("api/sale/commodityCategory").then(res => {
         this.listData = this.$utils.list2tree(res.data);
-        let item = this.listData && this.listData[0];
+        let item = res.data.find(item => item.id == this.defaultExpandedKeys[0]);
+        if (!item && this.listData) {
+          item = this.listData;
+        }
         if (item) {
           this.switchToEdit(item);
         } else {

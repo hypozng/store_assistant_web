@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <el-tree :data="menus" :props="props" @node-click="handleNodeClick" class="menu-tree"></el-tree>
+    <el-tree :data="menus" :props="props" :default-expanded-keys="defaultExpandedKeys" node-key="id" @node-click="handleNodeClick" class="menu-tree" />
     <div class="content">
       <el-form v-if="formData" ref="form" :model="formData" label-width="120px" align="left" :rules="rules">
         <el-container>
@@ -63,17 +63,18 @@ export default {
       mode: "add",
       menus: [],
       props: {
-        label: "name",
+        label: "name"
       },
+      defaultExpandedKeys: [],
       rules: {
         name: [
           {
             required: true,
             message: "请输入菜单名称",
-            trigger: ["blur"],
-          },
-        ],
-      },
+            trigger: ["blur"]
+          }
+        ]
+      }
     };
   },
   mounted() {
@@ -92,9 +93,7 @@ export default {
         this.switchToAdd();
         return;
       }
-      r = JSON.parse(JSON.stringify(r));
-      delete r.children;
-      this.formData = r;
+      this.formData = Object.fromEntries(Object.entries(r).filter(item => item[0] != "children"));
       this.mode = "edit";
     },
     // 处理添加同级按钮click事件
@@ -112,20 +111,9 @@ export default {
       }
       this.$utils.delete.call(this, "api/sys/menu/" + this.formData.id);
     },
-    // 加载数据
-    loadData() {
-      fetch.get("api/sys/menu").then((res) => {
-        this.menus = this.$utils.list2tree(res.data);
-        let item = this.menus && this.menus[0];
-        if (item) {
-          this.switchToEdit(item);
-        } else {
-          this.switchToAdd();
-        }
-      });
-    },
     // 处理节点点击事件
     handleNodeClick(menu) {
+      this.defaultExpandedKeys[0] = menu.id;
       this.switchToEdit(menu);
     },
     // 添加同级菜单
@@ -136,11 +124,26 @@ export default {
     addSubMenu() {
       this.switchToAdd(this.formData.id);
     },
+    // 加载数据
+    loadData() {
+      fetch.get("api/sys/menu").then(res => {
+        this.menus = this.$utils.list2tree(res.data);
+        let item = res.data.find(e => e.id == this.defaultExpandedKeys[0]);
+        if (!item && this.menus) {
+          item = this.menus[0];
+        }
+        if (item) {
+          this.switchToEdit(item);
+        } else {
+          this.switchToAdd();
+        }
+      });
+    },
     // 保存数据
     save() {
       this.$utils.save.call(this, "api/sys/menu/save");
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>

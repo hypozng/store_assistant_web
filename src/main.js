@@ -1,6 +1,7 @@
 import Vue from "vue";
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
+import "@/common/style.css";
 
 import router from "@/router/index.js";
 import store from "@/store/index.js";
