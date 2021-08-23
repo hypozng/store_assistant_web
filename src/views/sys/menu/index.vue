@@ -140,8 +140,10 @@ export default {
       });
     },
     // 保存数据
-    save() {
-      this.$utils.save.call(this, "api/sys/menu/save");
+    async save() {
+      let res = await this.$utils.save.call(this, "api/sys/menu/save");
+      this.handleNodeClick(res);
+      this.loadData();
     }
   }
 };

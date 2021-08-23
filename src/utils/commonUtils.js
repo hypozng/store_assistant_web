@@ -27,15 +27,18 @@ const utils = {
       return list;
     }
     options = options || {};
+    options.key = options.key || "id";
+    options.parentKey = options.parentKey || "parentId";
+    options.children = options.children || "children";
     return list.filter(child => {
-      let parent = list.find(item => item[options.key || "id"] == child[options.parent || "parentId"]);
+      let parent = list.find(item => item[options.key] == child[options.parentKey]);
       if (!parent) {
         return true;
       }
-      if (!parent[options.children || "children"]) {
-        parent[options.children || "children"] = [];
+      if (!parent[options.children]) {
+        parent[options.children] = [];
       }
-      parent[options.children || "children"].push(child);
+      parent[options.children].push(child);
     });
   },
 
@@ -57,38 +60,38 @@ const utils = {
   },
 
   //  保存表单数据
-  save(url, params) {
+  async save(url, params) {
     if (!params) {
       params = this.formData;
     }
-    utils.validate.call(this).then(() => {
-      fetch.post(url, params).then(res => {
-        Message.success("操作成功");
-        if (typeof this.close === "function") {
-          this.close();
-        }
-        if (typeof this.loadData === "function") {
-          this.loadData();
-        }
-        if (typeof this.$emit === "function") {
-          this.$emit("success", res.data);
-        }
-        return res;
-      });
-    });
+    await utils.validate.call(this);
+    let res = await fetch.post(url, params);
+    Message.success("操作成功");
+    if (typeof this.close === "function") {
+      this.close();
+    }
+    // if (typeof this.loadData === "function") {
+    //   this.loadData();
+    // }
+    if (typeof this.$emit === "function") {
+      this.$emit("success", res.data);
+    }
+    return res.data;
   },
 
   // 删除操作
-  delete(url) {
-    return global.vue.$confirm("确定删除这条数据？").then(() => {
-      return fetch.delete(url).then(res => {
-        Message.success("删除成功");
-        if (typeof this.loadData === "function") {
-          this.loadData();
-        }
-        return res;
-      });
-    }, console.error);
+  async delete(url) {
+    try {
+      await global.vue.$confirm("确定删除这条数据？");
+      let res = await fetch.delete(url);
+      Message.success("删除成功");
+      if (typeof this.loadData === "function") {
+        this.loadData();
+      }
+      return res;
+    } catch (err) {
+      console.error(err);
+    }
   },
 
   // 显示编辑对话框
@@ -101,7 +104,7 @@ const utils = {
       this.title = "添加";
       this.$nextTick(() => {
         this.$refs.form && this.$refs.form.resetFields();
-        this.formData = r ? JSON.parse(JSON.stringify(r)) : {};
+        this.formData = JSON.parse(JSON.stringify(r || {}));
       });
     }
     this.visible = true;

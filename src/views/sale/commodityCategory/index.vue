@@ -102,8 +102,10 @@ export default {
       });
     },
     // 保存
-    save() {
-      this.$utils.save.call(this, "api/sale/commodityCategory/save");
+    async save() {
+      let res = await this.$utils.save.call(this, "api/sale/commodityCategory/save");
+      this.handleNodeClick(res);
+      this.loadData();
     }
   }
 };

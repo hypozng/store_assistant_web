@@ -86,19 +86,18 @@ export default {
     close() {
       this.visible = false;
     },
-    loadData() {
+    async loadData() {
       let list = [];
       for (let i = 0; i < 10; ++i) {
         list.push(i);
       }
-      fetch.get("api/sys/dictionary/group/" + this.formData.groupKey).then(res => {
-        res.data.forEach(item => (item.index = item.id));
-        this.$set(this.formData, "children", res.data);
-        this.$refs.groupName.focus();
-      });
+      let res = await fetch.get("api/sys/dictionary/group/" + this.formData.groupKey);
+      res.data.forEach(item => (item.index = item.id));
+      this.$set(this.formData, "children", res.data);
+      this.$refs.groupName.focus();
     },
-    save() {
-      this.$utils.save.call(this, "api/sys/dictionary/save");
+    async save() {
+      await this.$utils.save.call(this, "api/sys/dictionary/save");
     }
   }
 };
