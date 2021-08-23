@@ -6,22 +6,20 @@
           <ff-input label="姓名" prop="name" v-model="formData.name" />
           <ff-select label="性别" prop="gender" v-model="formData.gender" dictionaryKey="gender" />
           <ff-input label="电话" prop="phone" v-model="formData.phone" />
-          <ff-date-picker label="出生日期" prop="birthday" v-model="formData.birthday" />
+          <ff-input label="住址" prop="address" v-model="formData.address" />
         </el-col>
         <el-col :span="12">
           <ff-image label="头像" prop="photo" v-model="formData.photo" />
         </el-col>
       </el-row>
-      <el-row>
-        <el-col :span="24">
+      <!-- <el-row>
+        <el-col :span="12">
           <ff-input label="身份证号" prop="idcard" v-model="formData.idcard" />
         </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
-          <ff-input label="住址" prop="address" v-model="formData.address" />
+        <el-col :span="12">
+          <ff-date-picker label="出生日期" prop="birthday" v-model="formData.birthday" />
         </el-col>
-      </el-row>
+      </el-row> -->
       <el-row>
         <el-col :span="24">
           <ff-textarea label="备注" prop="remark" v-model="formData.remark" />
@@ -40,7 +38,7 @@ export default {
     return {
       visible: false,
       title: "编辑",
-      formData: {},
+      formData: {}
     };
   },
   methods: {
@@ -52,13 +50,13 @@ export default {
     },
     save() {
       this.$utils.save.call(this, "api/sale/customer/save");
-    },
+    }
   },
   props: {
     appendToBody: {
       type: Boolean,
-      default: false,
-    },
-  },
+      default: false
+    }
+  }
 };
 </script>

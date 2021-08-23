@@ -215,9 +215,10 @@ export default {
 }
 
 .commodity-list-item {
-  box-shadow: 0 0 3px black;
-  margin: 5px;
+  margin: 10px 5px;
   padding: 5px;
+  box-shadow: 0 0 3px black;
+  border-radius: 3px;
   cursor: pointer;
   display: flex;
   flex-direction: row;

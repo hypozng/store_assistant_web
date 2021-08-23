@@ -4,7 +4,7 @@
       <div v-for="(param, index) in search" :key="param.key" class="search-input">
         <div class="search-input-label">{{ param.label }}</div>
         <div class="search-input-content">
-          <el-select v-if="param.type=='select'" :value="getSearchValue(param.key)" @input="handleSearchInput($event, param.key)" size="small" clearable>
+          <el-select v-if="param.type=='select'" :value="getSearchValue(param.key)" @input="handleSearchInput($event, param.key)" size="medium" clearable>
             <el-option
               v-for="option in getParamData(param)"
               :key="option[param.props&&param.props.value||'id']"
@@ -12,11 +12,18 @@
               :value="option[param.props&&param.props.value||'id']"
             />
           </el-select>
-          <el-input v-else :value="getSearchValue(param.key)" @input="handleSearchInput($event, param.key)" size="small" clearable />
+          <el-input
+            v-else
+            :value="getSearchValue(param.key)"
+            @input="handleSearchInput($event, param.key)"
+            @keypress.enter.native="handleSearchClick"
+            size="medimu"
+            clearable
+          />
         </div>
         <template v-if="index == search.length - 1">
-          <el-button type="primary" size="small" plain @click="handleSearchClick" style="margin-left: 10px">搜索</el-button>
-          <el-button type="warning" size="small" plain @click="handleResetClick">重置</el-button>
+          <el-button type="primary" size="medium" plain @click="handleSearchClick" style="margin-left: 10px">搜索</el-button>
+          <el-button type="warning" size="medium" plain @click="handleResetClick">重置</el-button>
         </template>
       </div>
     </div>
@@ -27,13 +34,22 @@
         v-show="!logic.getConfigProperty(tool.hidden)"
         :disabled="logic.getConfigProperty(tool.disabled)"
         :type="tool.type"
-        size="small"
+        size="medium"
         plain
         @click="tool.click"
       >{{ tool.label }}</el-button>
     </div>
     <div class="content item">
-      <el-table :data="tableData" class="table" style="width: 100%" header-row-class-name="table-header-row" cell-class-name="table-cell" border stripe size="small">
+      <el-table
+        :data="tableData"
+        class="table"
+        style="width: 100%"
+        header-row-class-name="table-header-row"
+        cell-class-name="table-cell"
+        border
+        stripe
+        size="medium"
+      >
         <el-table-column type="index" align="center" />
         <el-table-column
           v-for="column in columns"
@@ -66,7 +82,16 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination :page-sizes="paginationSizes" :layout="paginationLayout" :total="total" :pager-count="9" background class="item" @size-change="handleSizeChange" @current-change="handlePageChange" />
+    <el-pagination
+      :page-sizes="paginationSizes"
+      :layout="paginationLayout"
+      :total="total"
+      :pager-count="9"
+      background
+      class="item"
+      @size-change="handleSizeChange"
+      @current-change="handlePageChange"
+    />
   </div>
 </template>
 <script>
@@ -82,13 +107,13 @@ export default {
       tableData: [],
       total: 0,
       paginationLayout: "total, sizes, prev, pager, next, jumper",
-      paginationSizes: [10, 20, 30, 40, 50, 100],
+      paginationSizes: [20, 30, 40, 50, 100],
       searchParameter: {
         page: 1,
-        size: 10,
+        size: 20,
         sort: this.sort,
-        dir: this.dir,
-      },
+        dir: this.dir
+      }
     };
   },
   mounted() {
@@ -131,7 +156,7 @@ export default {
       if (!dic || !val) {
         return "";
       }
-      let item = dic.find((item) => item.code == val);
+      let item = dic.find(item => item.code == val);
       return (item && item.name) || val;
     },
     // 获取搜索条件数据
@@ -143,38 +168,36 @@ export default {
         return this.cache[param.key];
       }
       if (param.url) {
-        fetch.get(param.url).then((res) => {
+        fetch.get(param.url).then(res => {
           this.$set(this.cache, param.key, res.data);
         });
       } else if (param.dictionaryKey) {
-        this.$store.dispatch("dictionary", param.dictionaryKey).then((res) => {
+        this.$store.dispatch("dictionary", param.dictionaryKey).then(res => {
           this.$set(this.cache, param.key, res);
         });
       }
       return [];
     },
     // 加载数据
-    loadData() {
+    async loadData() {
       let loading = this.$loading({
         lock: true,
         text: "正在加载",
         spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
+        background: "rgba(0, 0, 0, 0.7)"
       });
       this.searchParameter.params = {
         ...this.params,
-        ...this.searchData,
+        ...this.searchData
       };
-      fetch
-        .post(this.url, this.searchParameter)
-        .then((res) => {
-          this.tableData = res.data.content;
-          this.total = res.data.total;
-        })
-        .finally(() => {
-          loading.close();
-        });
-    },
+      try {
+        let res = await fetch.post(this.url, this.searchParameter);
+        this.tableData = res.data.content;
+        this.total = res.data.total;
+      } finally {
+        loading.close();
+      }
+    }
   },
   watch: {
     sort(val) {
@@ -182,63 +205,63 @@ export default {
     },
     dir(val) {
       this.searchParameter.dir = val;
-    },
+    }
   },
   props: {
     // URL
     url: {
       type: String,
-      require: true,
+      require: true
     },
     // 自动加载数据
     autoLoad: {
       type: Boolean,
-      default: true,
+      default: true
     },
     // 查询条件
     search: {
       type: Array,
       default() {
         return [];
-      },
+      }
     },
     // 表格的列
     columns: {
       type: Array,
       default() {
         return [];
-      },
+      }
     },
     // 工具栏按钮
     tools: {
       type: Array,
       default() {
         return [];
-      },
+      }
     },
     // 操作列按钮
     buttons: {
       type: Array,
       default() {
         return [];
-      },
+      }
     },
     // 操作列宽度
     operationColumnWidth: {
       type: [String, Number],
-      default: 250,
+      default: 250
     },
     // 排序列
     sort: {
       type: String,
-      default: "id",
+      default: "id"
     },
     // 排序方向
     dir: {
       type: String,
-      default: "asc",
-    },
-  },
+      default: "asc"
+    }
+  }
 };
 </script>
 <style>
@@ -296,5 +319,9 @@ export default {
 .v-table .content {
   flex: 1;
   overflow: auto;
+}
+
+.v-table .el-input__inner {
+  background-color: white;
 }
 </style>

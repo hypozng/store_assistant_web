@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <el-tree :data="listData" :props="props" :expand-on-click-node="false" @node-click="handleNodeClick" class="category-tree" />
+    <el-tree :data="listData" :props="props" @node-click="handleNodeClick" class="category-tree" size="medium" />
     <div class="content">
       <el-container>
         <el-main>
@@ -32,7 +32,7 @@
           </el-form>
         </el-main>
       </el-container>
-      <el-button type="success" size="medium" plain @click="save">立即保存</el-button>
+      <el-button type="success" size="medium" @click="save">立即保存</el-button>
     </div>
   </div>
 </template>
@@ -45,8 +45,8 @@ export default {
       formData: null,
       mode: "add",
       props: {
-        label: "name",
-      },
+        label: "name"
+      }
     };
   },
   mounted() {
@@ -88,7 +88,7 @@ export default {
     },
     // 加载数据
     loadData() {
-      fetch.get("api/sale/commodityCategory").then((res) => {
+      fetch.get("api/sale/commodityCategory").then(res => {
         this.listData = this.$utils.list2tree(res.data);
         let item = this.listData && this.listData[0];
         if (item) {
@@ -101,8 +101,8 @@ export default {
     // 保存
     save() {
       this.$utils.save.call(this, "api/sale/commodityCategory/save");
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>
@@ -117,7 +117,7 @@ export default {
 .content {
   flex: 1;
   text-align: center;
-  background: #e0e0e0;
+  background: #f0f0f0;
 }
 .el-tree {
   width: 400px;

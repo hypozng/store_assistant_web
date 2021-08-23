@@ -117,5 +117,6 @@ export default {
 .router-view {
   flex: 1;
   overflow: auto;
+  background-color: #fafafa;
 }
 </style>

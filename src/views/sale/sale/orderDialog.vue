@@ -21,7 +21,7 @@
           <ff-money label="支付金额" prop="paidAmount" v-model="formData.paidAmount" />
           <ff-select label="支付方式" prop="payMethod" v-model="formData.payMethod" dictionaryKey="pay_method" />
           <ff-customer label="客户" prop="customerId" v-model="formData.customerId" />
-          <ff-date-picker label="创建时间" prop="createTime" v-model="formData.createTime" type="datetime" />
+          <ff-date-picker label="销售时间" prop="createTime" v-model="formData.createTime" type="datetime" />
           <el-form-item v-if="formData.paidAmount>formData.finalPrice" label="找零">
             <span>{{$utils.render("money", formData.paidAmount - formData.finalPrice)}}</span>
           </el-form-item>

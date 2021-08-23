@@ -4,22 +4,22 @@
     <!-- 商品列表 -->
     <div class="commodity-box">
       <div class="commodity-search">
-        <el-select v-model="searchParameter.params.brandId" @change="loadData" size="mini" clearable>
+        <el-select v-model="searchParameter.params.brandId" @change="loadData" size="medium" clearable>
           <v-promise url="api/sale/commodityBrand">
             <template slot-scope="scope">
               <el-option v-for="item in scope.data" :key="item.id" :label="item.name" :value="item.id" />
             </template>
           </v-promise>
         </el-select>
-        <el-select v-model="searchParameter.params.categoryId" @change="loadData" size="mini" clearable>
+        <el-select v-model="searchParameter.params.categoryId" @change="loadData" size="medium" clearable>
           <v-promise url="api/sale/commodityCategory">
             <template slot-scope="scope">
               <el-option v-for="item in scope.data" :key="item.id" :label="item.name" :value="item.id" />
             </template>
           </v-promise>
         </el-select>
-        <el-input v-model="searchParameter.params.keyword" @keypress.enter.native="loadData" size="mini" clearable />
-        <el-button type="primary" size="mini" @click="loadData">搜索</el-button>
+        <el-input v-model="searchParameter.params.keyword" @keypress.enter.native="loadData" size="medium" clearable />
+        <el-button type="primary" size="medium" @click="loadData">搜索</el-button>
       </div>
       <ul class="commodity-list">
         <li v-for="item in dataList" :key="item.id" class="commodity-list-item" @click="handleItemClick(item)">
@@ -155,7 +155,7 @@ export default {
   padding: 5px;
   display: flex;
   flex-direction: row;
-  box-shadow: 0 0 3px;
+  /* box-shadow: 0 0 3px; */
 }
 
 .commodity-search > * {
@@ -180,6 +180,7 @@ export default {
   box-shadow: 0 0 3px;
   position: relative;
   cursor: pointer;
+  background-color: white;
 }
 
 .commodity-list-item .item-image {
@@ -240,7 +241,7 @@ export default {
   display: flex;
   flex-direction: column;
   margin-left: 10px;
-  box-shadow: 0 0 3px;
+  /* box-shadow: 0 0 3px; */
 }
 
 .order-commodity-list {
@@ -250,11 +251,14 @@ export default {
   overflow-y: scroll;
 }
 .order-commodity-list-item {
+  margin: 10px 5px;
   box-shadow: 0 0 3px black;
-  margin: 5px;
+  border-radius: 3px;
+  overflow: hidden;
   list-style: none;
   display: flex;
   flex-direction: row;
+  background-color: white;
 }
 
 .order-commodity-list-item .el-input-number {

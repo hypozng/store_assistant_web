@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <el-tree :data="menus" :props="props" :expand-on-click-node="false" @node-click="handleNodeClick" class="menu-tree"></el-tree>
+    <el-tree :data="menus" :props="props" @node-click="handleNodeClick" class="menu-tree"></el-tree>
     <div class="content">
       <el-form v-if="formData" ref="form" :model="formData" label-width="120px" align="left" :rules="rules">
         <el-container>
@@ -50,7 +50,7 @@
           </el-main>
         </el-container>
       </el-form>
-      <el-button type="success" size="medium" plain @click="save">立即保存</el-button>
+      <el-button type="success" size="medium" @click="save">立即保存</el-button>
     </div>
   </div>
 </template>
@@ -146,7 +146,7 @@ export default {
 <style scoped>
 .page {
   width: 100%;
-  background-color: #e0e0e0;
+  background-color: #f0f0f0;
   display: flex;
   flex-direction: row;
 }
