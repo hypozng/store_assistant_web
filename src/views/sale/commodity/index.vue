@@ -2,17 +2,20 @@
   <div>
     <edit-dialog ref="editDialog" @success="loadData" />
     <price-list-dialog ref="priceListDialog" />
-    <v-table ref="table" :url="url" :columns="columns" :search="search" :buttons="buttons" :tools="tools" />
+    <detail-dialog ref="detailDialog" />
+    <v-table ref="table" :url="url" :columns="columns" :search="search" :buttons="buttons" :tools="tools" :operation-column-width="300" />
   </div>
 </template>
 
 <script>
 import editDialog from "./editDialog";
 import priceListDialog from "./priceListDialog";
+import detailDialog from "./detailDialog";
 export default {
   components: {
     editDialog,
-    priceListDialog
+    priceListDialog,
+    detailDialog
   },
   data() {
     return {
@@ -39,6 +42,7 @@ export default {
       ],
       buttons: [
         { label: "调价记录", type: "primary", click: this.handlePriceRecordClick },
+        { label: "查看", type: "primary", click: this.handleRowDetailClick },
         { label: "编辑", type: "primary", click: this.handleRowEditClick },
         { label: "删除", type: "danger", click: this.handleRowDeleteClick }
       ],
@@ -53,6 +57,10 @@ export default {
     // 处理表格数据编辑按钮click事件
     handleRowEditClick(r) {
       this.$refs.editDialog.show(r);
+    },
+    // 处理表格数据查看按钮click事件
+    handleRowDetailClick(r) {
+      this.$refs.detailDialog.show(r.id);
     },
     // 处理表格数据详情按钮
     handlePriceRecordClick(r) {

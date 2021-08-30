@@ -1,6 +1,9 @@
 <template>
   <div class="page-main">
     <order-dialog ref="orderDialog" @success="onOrderSuccess" />
+
+    <commodity-dialog ref="commodityDialog" />
+
     <!-- 商品列表 -->
     <div class="commodity-box">
       <div class="commodity-search">
@@ -24,10 +27,10 @@
       <ul class="commodity-list">
         <li v-for="item in dataList" :key="item.id" class="commodity-list-item" @click="handleItemClick(item)">
           <v-attachment-image :value="item.image" disabled class="item-image" icon-style="font-size:100px" />
-          <span class="item-title" :title="item.name">{{item.name}}</span>
+          <span class="item-title link" :title="item.name" @click.stop="commodityDetail(item.id)">{{item.name}}</span>
           <span class="item-sku">
             <span :title="item.sku">{{item.sku}}</span>
-            <i class="el-icon-document-copy" title="点击复制" @click.stop="$utils.copy(item.sku)"></i>
+            <i class="el-icon-document-copy link" title="点击复制" @click.stop="$utils.copy(item.sku)"></i>
           </span>
           <div class="item-footer">
             <span class="item-price">{{$utils.render("money", item.salePrice)}}</span>
@@ -41,12 +44,12 @@
     <div class="order-box">
       <ul class="order-commodity-list">
         <li v-for="item in orderList" :key="item.id" class="order-commodity-list-item">
-          <v-attachment-image :value="item.image" disabled class="item-image" />
+          <v-attachment-image :value="item.image" disabled class="item-image" @click.native="commodityDetail(item.id)" />
           <div class="item-right">
-            <span class="item-title" :title="item.name">{{item.name}}</span>
+            <span class="item-title link" :title="item.name" @click="commodityDetail(item.id)">{{item.name}}</span>
             <span class="item-price">{{$utils.render("money", item.salePrice)}}</span>
             <el-input-number :value="item.amount" size="mini" :min="1" @input="handleOrderAmountInput(item.id,$event)" style="margin-left:10px" />
-            <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleOrderDeleteClick(item.id)" style="margin-left:10px" />
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click.stop="handleOrderDeleteClick(item.id)" style="margin-left:10px" />
           </div>
         </li>
       </ul>
@@ -61,9 +64,11 @@
 <script>
 import fetch from "@/utils/fetch.js";
 import orderDialog from "./orderDialog";
+import commodityDialog from "@/views/sale/commodity/detailDialog";
 export default {
   components: {
-    orderDialog
+    orderDialog,
+    commodityDialog
   },
   data() {
     return {
@@ -93,6 +98,7 @@ export default {
     }
   },
   methods: {
+    // 处理商品列表商品点击事件
     handleItemClick(commodity) {
       let orderCommodity = this.orderList.find(item => item.id == commodity.id);
       if (orderCommodity) {
@@ -103,17 +109,23 @@ export default {
       orderCommodity.amount = 1;
       this.orderList.push(orderCommodity);
     },
+    // 处理订单商品数量更改事件
     handleOrderAmountInput(id, val) {
       let orderCommodity = this.orderList.find(item => item.id == id);
       if (orderCommodity) {
         orderCommodity.amount = val;
       }
     },
+    // 处理订单商品删除按钮点击事件
     handleOrderDeleteClick(id) {
       let orderCommodity = this.orderList.find(item => item.id == id);
       if (orderCommodity) {
         this.orderList.splice(this.orderList.indexOf(orderCommodity), 1);
       }
+    },
+    // 查看商品详细信息
+    commodityDetail(id) {
+      this.$refs.commodityDialog.show(id);
     },
     // 提交订单
     submitOrder() {
@@ -235,6 +247,9 @@ export default {
 .commodity-list-item .item-sku i {
   margin-left: 5px;
 }
+.commodity-list-item .item-sku i {
+  margin-left: 5px;
+}
 
 .order-box {
   width: 400px;
@@ -301,5 +316,13 @@ export default {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+}
+
+.link {
+  cursor: pointer;
+}
+
+.link:hover {
+  color: blue;
 }
 </style>

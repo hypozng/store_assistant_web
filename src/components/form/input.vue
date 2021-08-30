@@ -1,6 +1,7 @@
 <template>
   <ff-item v-if="prop" :label="label" :prop="prop">
-    <el-input :value="value" @input="$emit('input', $event)" :style="vStyle" :disabled="disabled" :placeholder="placeholder" :size="size" :type="type" />
+    <span v-if="readonly">{{value}}</span>
+    <el-input v-else :value="value" @input="$emit('input', $event)" :style="vStyle" :disabled="disabled" :placeholder="placeholder" :size="size" :type="type" />
   </ff-item>
 </template>
 <script>
@@ -29,6 +30,10 @@ export default {
       default: "width:100%"
     },
     disabled: {
+      type: Boolean,
+      default: false
+    },
+    readonly: {
       type: Boolean,
       default: false
     },

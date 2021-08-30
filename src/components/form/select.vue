@@ -1,6 +1,7 @@
 <template>
   <ff-item :label="label" :prop="prop" :required="required">
-    <el-select :value="value" @input="$emit('input', $event)" :style="vStyle" :placeholder="placeholder" :size="size">
+    <span v-if="readonly">{{render()}}</span>
+    <el-select v-else :value="value" @input="$emit('input', $event)" :style="vStyle" :placeholder="placeholder" :size="size">
       <el-option v-for="(option, index) in optionsList" :key="index" :label="option[labelKey]" :value="option[valueKey]" />
     </el-select>
   </ff-item>
@@ -38,7 +39,14 @@ export default {
         return;
       }
       this.optionsList = this.options;
-    }
+    },
+    render() {
+      if (!this.optionsList || !this.optionsList.length) {
+        return this.value;
+      }
+      let option = this.optionsList.find(item => item.value == this.value);
+      return option && option.label || this.value;
+    },
   },
   watch: {
     // 监听选项值的更改
@@ -75,6 +83,10 @@ export default {
       default: "width:100%"
     },
     disabled: {
+      type: Boolean,
+      default: false
+    },
+    readonly: {
       type: Boolean,
       default: false
     },

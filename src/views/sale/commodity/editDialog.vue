@@ -7,8 +7,15 @@
           <el-col :span="12">
             <ff-input label="名称" prop="name" v-model="formData.name" />
             <ff-select label="种类" prop="categoryId" v-model="formData.categoryId" url="api/sale/commodityCategory" />
-            <ff-select label="品牌" prop="brandId" v-model="formData.brandId" url="api/sale/commodityBrand" />
-            <ff-input v-model="formData.model" label="型号" prop="model" />
+            <el-row>
+              <el-col :span="12">
+                <ff-select label="品牌" prop="brandId" v-model="formData.brandId" url="api/sale/commodityBrand" />
+              </el-col>
+              <el-col :span="12">
+                <ff-input v-model="formData.model" label="型号" prop="model" />
+              </el-col>
+            </el-row>
+            <ff-input label="货号" prop="code" v-model="formData.code" />
           </el-col>
           <el-col :span="12">
             <ff-image label="图片" prop="image" v-model="formData.image" />
@@ -16,10 +23,10 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <ff-input label="货号" prop="code" v-model="formData.code" />
+            <ff-input label="SKU" prop="sku" v-model="formData.sku" />
           </el-col>
           <el-col :span="12">
-            <ff-input label="SKU" prop="code" v-model="formData.sku" />
+            <ff-input label="备用SKU" prop="spareSku" v-model="formData.spareSku" />
           </el-col>
         </el-row>
         <el-row @click.native="handlePriceClick">
@@ -28,6 +35,11 @@
           </el-col>
           <el-col :span="12">
             <ff-money label="采购价格" prop="purchasePrice" v-model="formData.purchasePrice" :disabled="mode!='add'" />
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <ff-input label="商品URL" prop="url" v-model="formData.url" />
           </el-col>
         </el-row>
         <el-row>

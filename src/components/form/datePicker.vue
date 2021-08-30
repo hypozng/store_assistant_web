@@ -1,12 +1,27 @@
 <template>
   <ff-item :label="label" :prop="prop">
-    <el-date-picker :value="value" @input="$emit('input', $event)" :style="vStyle" :disabled="disabled" :placeholder="placeholder" :size="size" :type="type" />
+    <span v-if="readonly">{{render()}}</span>
+    <el-date-picker
+      v-else
+      :value="value"
+      @input="$emit('input', $event)"
+      :style="vStyle"
+      :disabled="disabled"
+      :placeholder="placeholder"
+      :size="size"
+      :type="type"
+    />
   </ff-item>
 </template>
 <script>
 export default {
   data() {
     return {};
+  },
+  methods: {
+    render() {
+      return this.$moment(this.value).format("YYYY-MM-DD");
+    }
   },
   props: {
     label: {
@@ -29,6 +44,10 @@ export default {
       default: "width:100%"
     },
     disabled: {
+      type: Boolean,
+      default: false
+    },
+    readonly: {
       type: Boolean,
       default: false
     },

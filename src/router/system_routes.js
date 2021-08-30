@@ -28,5 +28,12 @@ export default [{
     meta: {
       title: "字典管理"
     }
+  },
+  {
+    path: "/sys_backup",
+    component: () => import("@/views/sys/backup/index.vue"),
+    meta: {
+      title: "数据备份"
+    }
   }
 ];
