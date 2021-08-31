@@ -20,11 +20,12 @@
           <ff-money label="成交价" prop="finalPrice" v-model="formData.finalPrice" />
           <ff-money label="支付金额" prop="paidAmount" v-model="formData.paidAmount" />
           <ff-select label="支付方式" prop="payMethod" v-model="formData.payMethod" dictionary-key="pay_method" />
-          <ff-customer label="客户" prop="customerId" v-model="formData.customerId" />
+          <!-- <ff-customer label="客户" prop="customerId" v-model="formData.customerId" /> -->
           <ff-select label="配送方式" prop="distributionMode" v-model="formData.distributionMode" dictionary-key="distribution_mode" />
           <template v-if="formData.distributionMode=='0001'">
-            <ff-input label="联系方式" prop="phone" v-model="formData.phone" />
-            <ff-input label="配送地址" prop="address" v-model="formData.address" />
+            <ff-input label="电话" prop="tel" v-model="formData.tel" />
+            <ff-input label="姓名" prop="name" v-model="formData.name" />
+            <ff-input label="地址" prop="address" v-model="formData.address" />
           </template>
           <ff-date-picker label="销售时间" prop="createTime" v-model="formData.createTime" type="datetime" />
           <el-form-item v-if="formData.paidAmount>formData.finalPrice" label="找零">
@@ -45,18 +46,27 @@
 </template>
 <script>
 import { Message } from "element-ui";
+import fetch from "@/utils/fetch.js"
 export default {
   data() {
     return {
       visible: false,
       formData: {},
       orderPrice: 0,
-      commodities: []
+      commodities: [],
+      telInputTimer: null,
+      customer: null,
     };
   },
   watch: {
     "formData.finalPrice": function() {
       this.formData.paidAmount = this.formData.finalPrice;
+    },
+    "formData.tel": function() {
+      if (this.telInputTimer) {
+        clearTimeout(this.telInputTimer);
+      }
+      this.telInputTimer = setTimeout(this.loadCustomer, 200);
     }
   },
   methods: {
@@ -72,6 +82,7 @@ export default {
         salePrice,
         finalPrice: salePrice,
         paidAmount: salePrice,
+        distributionMode: "0002",
         commodities: commodities.map(item => ({ commodityId: item.id, amount: item.amount }))
       };
       this.visible = true;
@@ -87,6 +98,17 @@ export default {
         return;
       }
       this.$utils.save.call(this, "api/sale/order/save");
+    },
+    // 加载客户信息
+    async loadCustomer() {
+      let tel = this.formData && this.formData.tel;
+      if (!tel || tel.length < 7) {
+        return;
+      }
+      let res = await fetch.get("api/sale/customer/tel/" + tel);
+      this.customer = res.data;
+      this.$set(this.formData, "name", this.customer && this.customer.name || "");
+      this.$set(this.formData, "address", this.customer && this.customer.address || "");
     }
   }
 };

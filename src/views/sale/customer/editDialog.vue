@@ -5,7 +5,7 @@
         <el-col :span="12">
           <ff-input label="姓名" prop="name" v-model="formData.name" />
           <ff-select label="性别" prop="gender" v-model="formData.gender" dictionaryKey="gender" />
-          <ff-input label="电话" prop="phone" v-model="formData.phone" />
+          <ff-input label="电话" prop="tel" v-model="formData.tel" />
           <ff-input label="住址" prop="address" v-model="formData.address" />
         </el-col>
         <el-col :span="12">

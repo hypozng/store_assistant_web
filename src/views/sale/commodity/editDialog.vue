@@ -82,7 +82,6 @@ export default {
     // 显示对话框
     show(r) {
       this.mode = r ? "edit" : "add";
-      r = r || { salePrice: 0, purchasePrice: 0 };
       this.$utils.showEditDialog.call(this, r);
     },
     // 关闭对话框

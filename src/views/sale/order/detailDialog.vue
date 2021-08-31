@@ -37,7 +37,7 @@
       <el-divider content-position="center">客户信息</el-divider>
       <template v-if="formData.customer">
         <p>姓名：{{formData.customer.name}}</p>
-        <p>电话：{{formData.customer.phone}}</p>
+        <p>电话：{{formData.customer.tel}}</p>
         <p>地址：{{formData.customer.address}}</p>
       </template>
       <template v-else>

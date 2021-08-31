@@ -13,7 +13,7 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <ff-input label="电话" prop="phone" v-model="formData.phone" />
+              <ff-input label="电话" prop="tel" v-model="formData.tel" />
             </el-col>
             <el-col :span="12">
               <ff-input label="昵称" prop="nickname" v-model="formData.nickname" />
