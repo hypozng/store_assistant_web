@@ -16,7 +16,7 @@ export default {
       columns: [
         { key: "code", label: "订单号", width: "200", align: "center" },
         { key: "name", label: "姓名", width: "100" },
-        { key: "gender", label: "性别", width: "80", align: "center", dictionaryKey: "gender" },
+        // { key: "gender", label: "性别", width: "80", align: "center", dictionaryKey: "gender" },
         { key: "tel", label: "电话", width: "150", align: "center" },
         { key: "address", label: "地址", width: "300" },
         { key: "salePrice", label: "销售价", width: "120", align: "right", render: "money" },

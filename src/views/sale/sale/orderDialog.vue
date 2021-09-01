@@ -19,14 +19,14 @@
           <el-form-item label="订单价格" prop="salePrice">{{$utils.render("money", formData.salePrice)}}</el-form-item>
           <ff-money label="成交价" prop="finalPrice" v-model="formData.finalPrice" />
           <ff-money label="支付金额" prop="paidAmount" v-model="formData.paidAmount" />
-          <ff-select label="支付方式" prop="payMethod" v-model="formData.payMethod" dictionary-key="pay_method" />
           <!-- <ff-customer label="客户" prop="customerId" v-model="formData.customerId" /> -->
+          <ff-input label="电话" prop="tel" v-model="formData.tel" />
+          <ff-input label="姓名" prop="name" v-model="formData.name" />
           <ff-select label="配送方式" prop="distributionMode" v-model="formData.distributionMode" dictionary-key="distribution_mode" />
           <template v-if="formData.distributionMode=='0001'">
-            <ff-input label="电话" prop="tel" v-model="formData.tel" />
-            <ff-input label="姓名" prop="name" v-model="formData.name" />
             <ff-input label="地址" prop="address" v-model="formData.address" />
           </template>
+          <ff-select label="支付方式" prop="payMethod" v-model="formData.payMethod" dictionary-key="pay_method" />
           <ff-date-picker label="销售时间" prop="createTime" v-model="formData.createTime" type="datetime" />
           <el-form-item v-if="formData.paidAmount>formData.finalPrice" label="找零">
             <span>{{$utils.render("money", formData.paidAmount - formData.finalPrice)}}</span>
